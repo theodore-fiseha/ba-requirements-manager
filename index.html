@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Toppan Security · BA Requirements Manager</title>
+    <title>BA Management Tool · BA Requirements Manager</title>
     <link
       href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@400;500&family=Syne:wght@400;500;700&display=swap"
       rel="stylesheet" />
@@ -743,7 +743,7 @@
     <!-- ─── SETUP OVERLAY ──────────────────────────────────────── -->
     <div id="setup-overlay">
       <div class="setup-card">
-        <div class="logo-text">TOPPAN SECURITY</div>
+        <div class="logo-text">BA Management Tool</div>
         <div class="subtitle">BA Requirements Manager</div>
         <h2>Welcome</h2>
         <p>
@@ -764,7 +764,7 @@
     <div id="app">
       <div class="topbar">
         <div class="topbar-left">
-          <span class="brand">TOPPAN SECURITY</span>
+          <span class="brand">BA Management Tool</span>
           <span class="brand-sep">·</span>
           <span class="brand-sub">Requirements Manager</span>
         </div>
@@ -1149,7 +1149,7 @@
             /* ══════════════════════════════════════════════════════════
                STATE
             ══════════════════════════════════════════════════════════ */
-            let SHEET_URL = localStorage.getItem('toppan_sheet_url') || '';
+            let SHEET_URL = localStorage.getItem('ba_management_tool_sheet_url') || '';
             let data = { requirements: [], verification: [], traceability: [] };
             let activeFilters = { search: '', status: '', priority: '' };
 
@@ -1182,7 +1182,7 @@
             /* ══════════════════════════════════════════════════════════
                LOCAL STORAGE (fallback / cache)
             ══════════════════════════════════════════════════════════ */
-            const LS_KEY = 'toppan_ba_data';
+            const LS_KEY = 'ba_data';
 
             function saveLocal() {
               try { localStorage.setItem(LS_KEY, JSON.stringify(data)); } catch(e) {}
@@ -1279,7 +1279,7 @@
                 toast('Please enter a valid Apps Script URL', 'err'); return;
               }
               SHEET_URL = url;
-              localStorage.setItem('toppan_sheet_url', url);
+              localStorage.setItem('ba_management_tool_sheet_url', url);
               closeSyncModal();
               // Update topbar button label
               document.querySelector('.btn-sync').textContent = '⇅ Sheet Connected';
@@ -1288,7 +1288,7 @@
             }
             function disconnectSheet() {
               SHEET_URL = '';
-              localStorage.removeItem('toppan_sheet_url');
+              localStorage.removeItem('ba_management_tool_sheet_url');
               document.querySelector('.btn-sync').textContent = '⇅ Sync Sheet';
               setSyncStatus('warn', 'Disconnected from Sheet');
               toast('Sheet disconnected');
