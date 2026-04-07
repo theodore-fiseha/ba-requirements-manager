@@ -1,571 +1,822 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>BA Requirements Manager</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@400;500&family=Syne:wght@400;500;700&display=swap" rel="stylesheet" />
-<style>
-  :root {
-    --bg: #0a0c10;
-    --surface: #111318;
-    --surface2: #181b22;
-    --border: #252830;
-    --accent: #c9a84c;
-    --accent2: #e8c96e;
-    --text: #e2e4ea;
-    --muted: #6b7280;
-    --danger: #e05252;
-    --success: #4caf7d;
-    --warn: #e09a3c;
-    --info: #4c8fe0;
-    --purple: #9b72e0;
-    --radius: 8px;
-    --font-head: 'DM Serif Display', serif;
-    --font-body: 'Syne', sans-serif;
-    --font-mono: 'DM Mono', monospace;
-  }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Toppan Security · BA Requirements Manager</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@400;500&family=Syne:wght@400;500;700&display=swap"
+      rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #0a0c10;
+        --surface: #111318;
+        --surface2: #181b22;
+        --border: #252830;
+        --accent: #c9a84c;
+        --accent2: #e8c96e;
+        --text: #e2e4ea;
+        --muted: #6b7280;
+        --danger: #e05252;
+        --success: #4caf7d;
+        --warn: #e09a3c;
+        --info: #4c8fe0;
+        --purple: #9b72e0;
+        --radius: 8px;
+        --font-head: "DM Serif Display", serif;
+        --font-body: "Syne", sans-serif;
+        --font-mono: "DM Mono", monospace;
+      }
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--font-body);
-    font-size: 14px;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--font-body);
+        font-size: 14px;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
 
-  /* ─── SETUP OVERLAY ───────────────────────────────────── */
-  #setup-overlay {
-    position: fixed; inset: 0; background: var(--bg);
-    display: flex; align-items: center; justify-content: center;
-    z-index: 1000; padding: 20px;
-  }
-  .setup-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 48px;
-    max-width: 540px;
-    width: 100%;
-    text-align: center;
-  }
-  .setup-card .logo-text {
-    font-family: var(--font-head);
-    font-size: 28px;
-    color: var(--accent);
-    letter-spacing: 0.05em;
-    margin-bottom: 8px;
-  }
-  .setup-card .subtitle {
-    color: var(--muted);
-    font-size: 13px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin-bottom: 40px;
-  }
-  .setup-card h2 {
-    font-family: var(--font-body);
-    font-size: 18px;
-    font-weight: 700;
-    margin-bottom: 16px;
-    color: var(--text);
-  }
-  .setup-card p {
-    font-size: 13px;
-    color: var(--muted);
-    line-height: 1.7;
-    margin-bottom: 24px;
-  }
-  .setup-card p a { color: var(--accent); }
-  .field-group { text-align: left; margin-bottom: 20px; }
-  .field-group label {
-    display: block; font-size: 11px; letter-spacing: 0.1em;
-    text-transform: uppercase; color: var(--muted); margin-bottom: 8px;
-  }
-  .field-group input {
-    width: 100%; background: var(--surface2); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 12px 16px;
-    color: var(--text); font-family: var(--font-mono); font-size: 13px;
-    outline: none; transition: border-color 0.2s;
-  }
-  .field-group input:focus { border-color: var(--accent); }
-  .btn-primary {
-    background: var(--accent); color: #0a0c10;
-    border: none; border-radius: var(--radius); padding: 14px 32px;
-    font-family: var(--font-body); font-size: 14px; font-weight: 700;
-    letter-spacing: 0.05em; cursor: pointer; width: 100%;
-    transition: background 0.2s, transform 0.1s;
-  }
-  .btn-primary:hover { background: var(--accent2); transform: translateY(-1px); }
-  .setup-note {
-    font-size: 11px; color: var(--muted); margin-top: 16px; line-height: 1.6;
-  }
+      /* ─── SETUP OVERLAY ───────────────────────────────────── */
+      #setup-overlay {
+        position: fixed;
+        inset: 0;
+        background: var(--bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        padding: 20px;
+      }
+      .setup-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 48px;
+        max-width: 540px;
+        width: 100%;
+        text-align: center;
+      }
+      .setup-card .logo-text {
+        font-family: var(--font-head);
+        font-size: 28px;
+        color: var(--accent);
+        letter-spacing: 0.05em;
+        margin-bottom: 8px;
+      }
+      .setup-card .subtitle {
+        color: var(--muted);
+        font-size: 13px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 40px;
+      }
+      .setup-card h2 {
+        font-family: var(--font-body);
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 16px;
+        color: var(--text);
+      }
+      .setup-card p {
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.7;
+        margin-bottom: 24px;
+      }
+      .setup-card p a {
+        color: var(--accent);
+      }
+      .field-group {
+        text-align: left;
+        margin-bottom: 20px;
+      }
+      .field-group label {
+        display: block;
+        font-size: 11px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 8px;
+      }
+      .field-group input {
+        width: 100%;
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 12px 16px;
+        color: var(--text);
+        font-family: var(--font-mono);
+        font-size: 13px;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .field-group input:focus {
+        border-color: var(--accent);
+      }
+      .btn-primary {
+        background: var(--accent);
+        color: #0a0c10;
+        border: none;
+        border-radius: var(--radius);
+        padding: 14px 32px;
+        font-family: var(--font-body);
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        cursor: pointer;
+        width: 100%;
+        transition:
+          background 0.2s,
+          transform 0.1s;
+      }
+      .btn-primary:hover {
+        background: var(--accent2);
+        transform: translateY(-1px);
+      }
+      .setup-note {
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 16px;
+        line-height: 1.6;
+      }
 
-  /* ─── MAIN APP ────────────────────────────────────────── */
-  #app { display: none; }
+      /* ─── MAIN APP ────────────────────────────────────────── */
+      #app {
+        display: none;
+      }
 
-  /* Topbar */
-  .topbar {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 28px; height: 60px; position: sticky; top: 0; z-index: 100;
-  }
-  .topbar-left { display: flex; align-items: center; gap: 16px; }
-  .brand {
-    font-family: var(--font-head);
-    font-size: 20px; color: var(--accent); letter-spacing: 0.04em;
-  }
-  .brand-sep { color: var(--border); font-size: 20px; }
-  .brand-sub { font-size: 12px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
-  .sync-status {
-    font-size: 11px; color: var(--muted); display: flex; align-items: center; gap: 6px;
-  }
-  .dot {
-    width: 7px; height: 7px; border-radius: 50%; background: var(--muted);
-  }
-  .dot.ok { background: var(--success); }
-  .dot.saving { background: var(--warn); animation: pulse 1s infinite; }
-  .dot.err { background: var(--danger); }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+      /* Topbar */
+      .topbar {
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 28px;
+        height: 60px;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .topbar-left {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .brand {
+        font-family: var(--font-head);
+        font-size: 20px;
+        color: var(--accent);
+        letter-spacing: 0.04em;
+      }
+      .brand-sep {
+        color: var(--border);
+        font-size: 20px;
+      }
+      .brand-sub {
+        font-size: 12px;
+        color: var(--muted);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+      .sync-status {
+        font-size: 11px;
+        color: var(--muted);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--muted);
+      }
+      .dot.ok {
+        background: var(--success);
+      }
+      .dot.saving {
+        background: var(--warn);
+        animation: pulse 1s infinite;
+      }
+      .dot.err {
+        background: var(--danger);
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.4;
+        }
+      }
 
-  /* Tabs */
-  .tabs {
-    display: flex; gap: 2px; padding: 12px 28px 0;
-    border-bottom: 1px solid var(--border);
-    background: var(--surface);
-  }
-  .tab {
-    padding: 10px 20px; font-size: 12px; font-weight: 500;
-    letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted);
-    cursor: pointer; border-bottom: 2px solid transparent;
-    transition: color 0.2s, border-color 0.2s; white-space: nowrap;
-  }
-  .tab:hover { color: var(--text); }
-  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+      /* Tabs */
+      .tabs {
+        display: flex;
+        gap: 2px;
+        padding: 12px 28px 0;
+        border-bottom: 1px solid var(--border);
+        background: var(--surface);
+      }
+      .tab {
+        padding: 10px 20px;
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--muted);
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        transition:
+          color 0.2s,
+          border-color 0.2s;
+        white-space: nowrap;
+      }
+      .tab:hover {
+        color: var(--text);
+      }
+      .tab.active {
+        color: var(--accent);
+        border-bottom-color: var(--accent);
+      }
 
-  /* Panels */
-  .panel { display: none; padding: 28px; }
-  .panel.active { display: block; }
+      /* Panels */
+      .panel {
+        display: none;
+        padding: 28px;
+      }
+      .panel.active {
+        display: block;
+      }
 
-  /* ─── DASHBOARD ─────────────────────────────────────────── */
-  .dash-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 16px; margin-bottom: 32px;
-  }
-  .kpi-card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 20px 24px;
-  }
-  .kpi-label {
-    font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--muted); margin-bottom: 10px;
-  }
-  .kpi-value {
-    font-family: var(--font-head); font-size: 36px; color: var(--accent);
-    line-height: 1;
-  }
-  .kpi-sub { font-size: 11px; color: var(--muted); margin-top: 6px; }
-  .section-title {
-    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--muted); margin-bottom: 16px; font-weight: 500;
-  }
-  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-  .chart-card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 20px;
-  }
-  .bar-row {
-    display: flex; align-items: center; gap: 12px;
-    margin-bottom: 10px; font-size: 12px;
-  }
-  .bar-label { width: 90px; color: var(--muted); flex-shrink: 0; }
-  .bar-track {
-    flex: 1; background: var(--surface2); border-radius: 4px; height: 8px; overflow: hidden;
-  }
-  .bar-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
-  .bar-count { width: 28px; text-align: right; color: var(--text); font-family: var(--font-mono); }
+      /* ─── DASHBOARD ─────────────────────────────────────────── */
+      .dash-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 16px;
+        margin-bottom: 32px;
+      }
+      .kpi-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 20px 24px;
+      }
+      .kpi-label {
+        font-size: 10px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 10px;
+      }
+      .kpi-value {
+        font-family: var(--font-head);
+        font-size: 36px;
+        color: var(--accent);
+        line-height: 1;
+      }
+      .kpi-sub {
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 6px;
+      }
+      .section-title {
+        font-size: 11px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 16px;
+        font-weight: 500;
+      }
+      .two-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+      .chart-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 20px;
+      }
+      .bar-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 10px;
+        font-size: 12px;
+      }
+      .bar-label {
+        width: 90px;
+        color: var(--muted);
+        flex-shrink: 0;
+      }
+      .bar-track {
+        flex: 1;
+        background: var(--surface2);
+        border-radius: 4px;
+        height: 8px;
+        overflow: hidden;
+      }
+      .bar-fill {
+        height: 100%;
+        border-radius: 4px;
+        transition: width 0.6s ease;
+      }
+      .bar-count {
+        width: 28px;
+        text-align: right;
+        color: var(--text);
+        font-family: var(--font-mono);
+      }
 
-  /* ─── TABLE ─────────────────────────────────────────────── */
-  .toolbar {
-    display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; align-items: center;
-  }
-  .search-box {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 10px 16px;
-    color: var(--text); font-family: var(--font-body); font-size: 13px;
-    outline: none; width: 260px; transition: border-color 0.2s;
-  }
-  .search-box:focus { border-color: var(--accent); }
-  .filter-select {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 10px 14px;
-    color: var(--text); font-family: var(--font-body); font-size: 12px;
-    outline: none; cursor: pointer;
-  }
-  .btn-add {
-    background: var(--accent); color: #0a0c10;
-    border: none; border-radius: var(--radius); padding: 10px 20px;
-    font-family: var(--font-body); font-size: 12px; font-weight: 700;
-    letter-spacing: 0.05em; cursor: pointer; margin-left: auto;
-    transition: background 0.2s;
-  }
-  .btn-add:hover { background: var(--accent2); }
+      /* ─── TABLE ─────────────────────────────────────────────── */
+      .toolbar {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .search-box {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 10px 16px;
+        color: var(--text);
+        font-family: var(--font-body);
+        font-size: 13px;
+        outline: none;
+        width: 260px;
+        transition: border-color 0.2s;
+      }
+      .search-box:focus {
+        border-color: var(--accent);
+      }
+      .filter-select {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 10px 14px;
+        color: var(--text);
+        font-family: var(--font-body);
+        font-size: 12px;
+        outline: none;
+        cursor: pointer;
+      }
+      .btn-add {
+        background: var(--accent);
+        color: #0a0c10;
+        border: none;
+        border-radius: var(--radius);
+        padding: 10px 20px;
+        font-family: var(--font-body);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        cursor: pointer;
+        margin-left: auto;
+        transition: background 0.2s;
+      }
+      .btn-add:hover {
+        background: var(--accent2);
+      }
 
-  .table-wrap { overflow-x: auto; border-radius: var(--radius); }
-  table {
-    width: 100%; border-collapse: collapse;
-    background: var(--surface);
-  }
-  thead tr {
-    border-bottom: 1px solid var(--border);
-  }
-  th {
-    text-align: left; padding: 12px 14px;
-    font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--muted); font-weight: 500; white-space: nowrap;
-  }
-  td {
-    padding: 12px 14px; border-bottom: 1px solid var(--border);
-    font-size: 13px; vertical-align: middle;
-  }
-  tr:last-child td { border-bottom: none; }
-  tr:hover td { background: rgba(201,168,76,0.04); }
+      .table-wrap {
+        overflow-x: auto;
+        border-radius: var(--radius);
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: var(--surface);
+      }
+      thead tr {
+        border-bottom: 1px solid var(--border);
+      }
+      th {
+        text-align: left;
+        padding: 12px 14px;
+        font-size: 10px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--muted);
+        font-weight: 500;
+        white-space: nowrap;
+      }
+      td {
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--border);
+        font-size: 13px;
+        vertical-align: middle;
+      }
+      tr:last-child td {
+        border-bottom: none;
+      }
+      tr:hover td {
+        background: rgba(201, 168, 76, 0.04);
+      }
 
-  .req-id {
-    font-family: var(--font-mono); font-size: 11px; color: var(--accent);
-    background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.25);
-    border-radius: 4px; padding: 3px 7px; white-space: nowrap;
-  }
+      .req-id {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        color: var(--accent);
+        background: rgba(201, 168, 76, 0.1);
+        border: 1px solid rgba(201, 168, 76, 0.25);
+        border-radius: 4px;
+        padding: 3px 7px;
+        white-space: nowrap;
+      }
 
-  .badge {
-    display: inline-flex; align-items: center; gap: 4px;
-    font-size: 10px; font-weight: 600; letter-spacing: 0.08em;
-    text-transform: uppercase; padding: 3px 9px; border-radius: 20px;
-    white-space: nowrap;
-  }
-  .badge.must { background: rgba(224,82,82,0.15); color: #e05252; border: 1px solid rgba(224,82,82,0.3); }
-  .badge.should { background: rgba(76,143,224,0.15); color: #4c8fe0; border: 1px solid rgba(76,143,224,0.3); }
-  .badge.could { background: rgba(155,114,224,0.15); color: #9b72e0; border: 1px solid rgba(155,114,224,0.3); }
-  .badge.wont { background: rgba(107,114,128,0.15); color: #6b7280; border: 1px solid rgba(107,114,128,0.3); }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 3px 9px;
+        border-radius: 20px;
+        white-space: nowrap;
+      }
+      .badge.must {
+        background: rgba(224, 82, 82, 0.15);
+        color: #e05252;
+        border: 1px solid rgba(224, 82, 82, 0.3);
+      }
+      .badge.should {
+        background: rgba(76, 143, 224, 0.15);
+        color: #4c8fe0;
+        border: 1px solid rgba(76, 143, 224, 0.3);
+      }
+      .badge.could {
+        background: rgba(155, 114, 224, 0.15);
+        color: #9b72e0;
+        border: 1px solid rgba(155, 114, 224, 0.3);
+      }
+      .badge.wont {
+        background: rgba(107, 114, 128, 0.15);
+        color: #6b7280;
+        border: 1px solid rgba(107, 114, 128, 0.3);
+      }
 
-  .status-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
-  .st-approved { background: var(--success); }
-  .st-in-progress { background: var(--warn); }
-  .st-in-review { background: var(--info); }
-  .st-draft { background: var(--muted); }
-  .st-rejected { background: var(--danger); }
-  .st-closed { background: var(--danger); }
-  .status-text { display: flex; align-items: center; gap: 6px; }
+      .status-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        display: inline-block;
+      }
+      .st-approved {
+        background: var(--success);
+      }
+      .st-in-progress {
+        background: var(--warn);
+      }
+      .st-in-review {
+        background: var(--info);
+      }
+      .st-draft {
+        background: var(--muted);
+      }
+      .st-rejected {
+        background: var(--danger);
+      }
+      .st-closed {
+        background: var(--danger);
+      }
+      .status-text {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
 
-  .actions { display: flex; gap: 8px; }
-  .btn-icon {
-    background: none; border: 1px solid var(--border); border-radius: 6px;
-    padding: 5px 8px; color: var(--muted); cursor: pointer; font-size: 12px;
-    transition: all 0.15s;
-  }
-  .btn-icon:hover { border-color: var(--accent); color: var(--accent); }
-  .btn-icon.del:hover { border-color: var(--danger); color: var(--danger); }
+      .actions {
+        display: flex;
+        gap: 8px;
+      }
+      .btn-icon {
+        background: none;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 5px 8px;
+        color: var(--muted);
+        cursor: pointer;
+        font-size: 12px;
+        transition: all 0.15s;
+      }
+      .btn-icon:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .btn-icon.del:hover {
+        border-color: var(--danger);
+        color: var(--danger);
+      }
 
-  /* ─── MODAL ─────────────────────────────────────────────── */
-  .modal-bg {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.7);
-    display: none; align-items: center; justify-content: center;
-    z-index: 200; padding: 20px;
-  }
-  .modal-bg.open { display: flex; }
-  .modal {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 12px; width: 100%; max-width: 680px;
-    max-height: 90vh; overflow-y: auto;
-  }
-  .modal-header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 20px 24px; border-bottom: 1px solid var(--border);
-  }
-  .modal-title {
-    font-family: var(--font-head); font-size: 20px; color: var(--text);
-  }
-  .modal-close {
-    background: none; border: none; color: var(--muted); font-size: 20px;
-    cursor: pointer; line-height: 1; transition: color 0.15s;
-  }
-  .modal-close:hover { color: var(--text); }
-  .modal-body { padding: 24px; }
-  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  .form-group { display: flex; flex-direction: column; gap: 6px; }
-  .form-group.span-2 { grid-column: span 2; }
-  .form-group label {
-    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
-  }
-  .form-group input,
-  .form-group select,
-  .form-group textarea {
-    background: var(--surface2); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 10px 14px;
-    color: var(--text); font-family: var(--font-body); font-size: 13px;
-    outline: none; transition: border-color 0.2s;
-  }
-  .form-group input:focus,
-  .form-group select:focus,
-  .form-group textarea:focus { border-color: var(--accent); }
-  .form-group textarea { resize: vertical; min-height: 80px; }
-  .form-group select option { background: var(--surface2); }
-  .modal-footer {
-    padding: 16px 24px; border-top: 1px solid var(--border);
-    display: flex; gap: 10px; justify-content: flex-end;
-  }
-  .btn-cancel {
-    background: none; border: 1px solid var(--border); border-radius: var(--radius);
-    padding: 10px 20px; color: var(--muted); font-family: var(--font-body);
-    font-size: 13px; cursor: pointer; transition: border-color 0.2s, color 0.2s;
-  }
-  .btn-cancel:hover { border-color: var(--text); color: var(--text); }
-  .btn-save {
-    background: var(--accent); color: #0a0c10; border: none;
-    border-radius: var(--radius); padding: 10px 24px;
-    font-family: var(--font-body); font-size: 13px; font-weight: 700;
-    cursor: pointer; transition: background 0.2s;
-  }
-  .btn-save:hover { background: var(--accent2); }
+      /* ─── MODAL ─────────────────────────────────────────────── */
+      .modal-bg {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.7);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 200;
+        padding: 20px;
+      }
+      .modal-bg.open {
+        display: flex;
+      }
+      .modal {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        width: 100%;
+        max-width: 680px;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+      .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px 24px;
+        border-bottom: 1px solid var(--border);
+      }
+      .modal-title {
+        font-family: var(--font-head);
+        font-size: 20px;
+        color: var(--text);
+      }
+      .modal-close {
+        background: none;
+        border: none;
+        color: var(--muted);
+        font-size: 20px;
+        cursor: pointer;
+        line-height: 1;
+        transition: color 0.15s;
+      }
+      .modal-close:hover {
+        color: var(--text);
+      }
+      .modal-body {
+        padding: 24px;
+      }
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .form-group.span-2 {
+        grid-column: span 2;
+      }
+      .form-group label {
+        font-size: 10px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .form-group input,
+      .form-group select,
+      .form-group textarea {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 10px 14px;
+        color: var(--text);
+        font-family: var(--font-body);
+        font-size: 13px;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .form-group input:focus,
+      .form-group select:focus,
+      .form-group textarea:focus {
+        border-color: var(--accent);
+      }
+      .form-group textarea {
+        resize: vertical;
+        min-height: 80px;
+      }
+      .form-group select option {
+        background: var(--surface2);
+      }
+      .modal-footer {
+        padding: 16px 24px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+      }
+      .btn-cancel {
+        background: none;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 10px 20px;
+        color: var(--muted);
+        font-family: var(--font-body);
+        font-size: 13px;
+        cursor: pointer;
+        transition:
+          border-color 0.2s,
+          color 0.2s;
+      }
+      .btn-cancel:hover {
+        border-color: var(--text);
+        color: var(--text);
+      }
+      .btn-save {
+        background: var(--accent);
+        color: #0a0c10;
+        border: none;
+        border-radius: var(--radius);
+        padding: 10px 24px;
+        font-family: var(--font-body);
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .btn-save:hover {
+        background: var(--accent2);
+      }
 
-  /* ─── VERIFICATION & TRACEABILITY TABLES ───────────────── */
-  .inline-select {
-    background: transparent; border: none; color: inherit;
-    font-family: var(--font-body); font-size: 12px; cursor: pointer;
-    padding: 2px 4px; border-radius: 4px; outline: none;
-    transition: background 0.15s;
-  }
-  .inline-select:focus { background: var(--surface2); }
+      /* ─── VERIFICATION & TRACEABILITY TABLES ───────────────── */
+      .inline-select {
+        background: transparent;
+        border: none;
+        color: inherit;
+        font-family: var(--font-body);
+        font-size: 12px;
+        cursor: pointer;
+        padding: 2px 4px;
+        border-radius: 4px;
+        outline: none;
+        transition: background 0.15s;
+      }
+      .inline-select:focus {
+        background: var(--surface2);
+      }
 
-  /* ─── TOAST ─────────────────────────────────────────────── */
-  #toast {
-    position: fixed; bottom: 24px; right: 24px;
-    background: var(--surface2); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 12px 20px;
-    font-size: 13px; color: var(--text);
-    transform: translateY(80px); opacity: 0;
-    transition: all 0.3s ease; z-index: 9999;
-  }
-  #toast.show { transform: translateY(0); opacity: 1; }
+      /* ─── TOAST ─────────────────────────────────────────────── */
+      #toast {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 12px 20px;
+        font-size: 13px;
+        color: var(--text);
+        transform: translateY(80px);
+        opacity: 0;
+        transition: all 0.3s ease;
+        z-index: 9999;
+      }
+      #toast.show {
+        transform: translateY(0);
+        opacity: 1;
+      }
 
-  /* Empty state */
-  .empty {
-    text-align: center; padding: 60px 20px;
-    color: var(--muted); font-size: 13px;
-  }
+      /* Empty state */
+      .empty {
+        text-align: center;
+        padding: 60px 20px;
+        color: var(--muted);
+        font-size: 13px;
+      }
 
-  /* Scrollbar */
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+      /* Scrollbar */
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: var(--bg);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 3px;
+      }
 
-  .btn-sync {
-    background: var(--surface2); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 8px 16px;
-    color: var(--accent); font-family: var(--font-body); font-size: 12px;
-    font-weight: 600; cursor: pointer; letter-spacing: 0.04em;
-    transition: border-color 0.2s, background 0.2s;
-  }
-  .btn-sync:hover { border-color: var(--accent); background: rgba(201,168,76,0.08); }
-</style>
-</head>
-<body>
-
-<!-- ─── SETUP OVERLAY ──────────────────────────────────────── -->
-<div id="setup-overlay">
-  <div class="setup-card">
-    <div class="logo-text">BA Management Tool</div>
-    <div class="subtitle">BA Requirements Manager</div>
-    <h2>Welcome</h2>
-    <p>
-      All data is saved in your <strong>browser (localStorage)</strong> — works fully offline, no server needed.<br><br>
-      Optionally push/pull to Google Sheets anytime using the <strong>⇅ Sync Sheet</strong> button in the toolbar.
-    </p>
-    <button class="btn-primary" onclick="startApp()">Open Manager</button>
-    <div class="setup-note">
-      Or <a href="#" onclick="useDemoData(event)">load demo data</a> to preview with sample requirements.
-    </div>
-  </div>
-</div>
-
-<!-- ─── MAIN APP ───────────────────────────────────────────── -->
-<div id="app">
-  <div class="topbar">
-    <div class="topbar-left">
-      <span class="brand">BA Management Tool</span>
-      <span class="brand-sep">·</span>
-      <span class="brand-sub">Requirements Manager</span>
-    </div>
-    <div style="display:flex;align-items:center;gap:16px">
-      <button class="btn-sync" onclick="openSyncModal()">⇅ Sync Sheet</button>
-      <div class="sync-status">
-        <span class="dot" id="sync-dot"></span>
-        <span id="sync-label">Local storage</span>
+      .btn-sync {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 8px 16px;
+        color: var(--accent);
+        font-family: var(--font-body);
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        letter-spacing: 0.04em;
+        transition:
+          border-color 0.2s,
+          background 0.2s;
+      }
+      .btn-sync:hover {
+        border-color: var(--accent);
+        background: rgba(201, 168, 76, 0.08);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ─── SETUP OVERLAY ──────────────────────────────────────── -->
+    <div id="setup-overlay">
+      <div class="setup-card">
+        <div class="logo-text">TOPPAN SECURITY</div>
+        <div class="subtitle">BA Requirements Manager</div>
+        <h2>Welcome</h2>
+        <p>
+          All data is saved in your <strong>browser (localStorage)</strong> —
+          works fully offline, no server needed.<br /><br />
+          Optionally push/pull to Google Sheets anytime using the
+          <strong>⇅ Sync Sheet</strong> button in the toolbar.
+        </p>
+        <button class="btn-primary" onclick="startApp()">Open Manager</button>
+        <div class="setup-note">
+          Or <a href="#" onclick="useDemoData(event)">load demo data</a> to
+          preview with sample requirements.
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="tabs">
-    <div class="tab active" onclick="switchTab('dashboard')">Dashboard</div>
-    <div class="tab" onclick="switchTab('register')">Requirements Register</div>
-    <div class="tab" onclick="switchTab('verification')">Verification &amp; Sign-Off</div>
-    <div class="tab" onclick="switchTab('traceability')">Traceability Matrix</div>
-  </div>
-
-  <!-- ─── DASHBOARD ─────────────────────────── -->
-  <div class="panel active" id="panel-dashboard">
-    <div class="dash-grid" id="kpi-grid"></div>
-    <div class="two-col">
-      <div class="chart-card">
-        <div class="section-title">Priority Breakdown</div>
-        <div id="priority-chart"></div>
+    <!-- ─── MAIN APP ───────────────────────────────────────────── -->
+    <div id="app">
+      <div class="topbar">
+        <div class="topbar-left">
+          <span class="brand">TOPPAN SECURITY</span>
+          <span class="brand-sep">·</span>
+          <span class="brand-sub">Requirements Manager</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 16px">
+          <button class="btn-sync" onclick="openSyncModal()">
+            ⇅ Sync Sheet
+          </button>
+          <div class="sync-status">
+            <span class="dot" id="sync-dot"></span>
+            <span id="sync-label">Local storage</span>
+          </div>
+        </div>
       </div>
-      <div class="chart-card">
-        <div class="section-title">Status Breakdown</div>
-        <div id="status-chart"></div>
+
+      <div class="tabs">
+        <div class="tab active" onclick="switchTab('dashboard')">Dashboard</div>
+        <div class="tab" onclick="switchTab('register')">
+          Requirements Register
+        </div>
+        <div class="tab" onclick="switchTab('verification')">
+          Verification &amp; Sign-Off
+        </div>
+        <div class="tab" onclick="switchTab('traceability')">
+          Traceability Matrix
+        </div>
       </div>
-    </div>
-  </div>
 
-  <!-- ─── REQUIREMENTS REGISTER ─────────────── -->
-  <div class="panel" id="panel-register">
-    <div class="toolbar">
-      <input class="search-box" type="text" placeholder="Search requirements…" oninput="filterRegister(this.value)" />
-      <select class="filter-select" onchange="filterStatus(this.value)">
-        <option value="">All Statuses</option>
-        <option>Draft</option>
-        <option>In Review</option>
-        <option>Approved</option>
-        <option>In Progress</option>
-        <option>Rejected</option>
-        <option>Closed</option>
-      </select>
-      <select class="filter-select" onchange="filterPriority(this.value)">
-        <option value="">All Priorities</option>
-        <option>Must Have</option>
-        <option>Should Have</option>
-        <option>Could Have</option>
-        <option>Won't Have</option>
-      </select>
-      <button class="btn-add" onclick="openModal()">+ Add Requirement</button>
-    </div>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>REQ ID</th><th>Category</th><th>Title</th>
-            <th>Priority</th><th>Status</th><th>Assigned To</th>
-            <th>Due Date</th><th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="register-tbody"></tbody>
-      </table>
-    </div>
-  </div>
+      <!-- ─── DASHBOARD ─────────────────────────── -->
+      <div class="panel active" id="panel-dashboard">
+        <div class="dash-grid" id="kpi-grid"></div>
+        <div class="two-col">
+          <div class="chart-card">
+            <div class="section-title">Priority Breakdown</div>
+            <div id="priority-chart"></div>
+          </div>
+          <div class="chart-card">
+            <div class="section-title">Status Breakdown</div>
+            <div id="status-chart"></div>
+          </div>
+        </div>
+      </div>
 
-  <!-- ─── VERIFICATION ──────────────────────── -->
-  <div class="panel" id="panel-verification">
-    <div class="toolbar">
-      <input class="search-box" type="text" placeholder="Search…" oninput="filterVerification(this.value)" />
-    </div>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>REQ ID</th><th>Title</th><th>Method</th>
-            <th>Complete?</th><th>Correct?</th><th>Unambiguous?</th><th>Testable?</th>
-            <th>Status</th><th>Reviewer</th><th>Approver</th><th>Comments</th>
-          </tr>
-        </thead>
-        <tbody id="verification-tbody"></tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- ─── TRACEABILITY ──────────────────────── -->
-  <div class="panel" id="panel-traceability">
-    <div class="toolbar">
-      <input class="search-box" type="text" placeholder="Search…" oninput="filterTraceability(this.value)" />
-    </div>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>REQ ID</th><th>Title</th><th>Business Objective</th>
-            <th>Spec Ref</th><th>Design Ref</th><th>Dev Item</th>
-            <th>Test Case</th><th>Test Result</th><th>Defect Ref</th>
-            <th>Traceability</th><th>Coverage %</th><th>Notes</th>
-          </tr>
-        </thead>
-        <tbody id="traceability-tbody"></tbody>
-      </table>
-    </div>
-  </div>
-</div>
-
-<!-- ─── ADD/EDIT MODAL ─────────────────────────────────────── -->
-<div class="modal-bg" id="modal-bg" onclick="handleModalBgClick(event)">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title" id="modal-title">Add Requirement</div>
-      <button class="modal-close" onclick="closeModal()">×</button>
-    </div>
-    <div class="modal-body">
-      <input type="hidden" id="f-index" value="-1" />
-      <div class="form-grid">
-        <div class="form-group">
-          <label>REQ ID</label>
-          <input id="f-id" type="text" placeholder="REQ-001" />
-        </div>
-        <div class="form-group">
-          <label>Category</label>
-          <select id="f-category">
-            <option>Functional</option>
-            <option>Non-Functional</option>
-            <option>Technical</option>
-            <option>Compliance</option>
-            <option>Integration</option>
-            <option>Security</option>
-            <option>Performance</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Sub-Category</label>
-          <input id="f-subcategory" type="text" placeholder="e.g. portal one" />
-        </div>
-        <div class="form-group">
-          <label>Priority (MoSCoW)</label>
-          <select id="f-priority">
-            <option>Must Have</option>
-            <option>Should Have</option>
-            <option>Could Have</option>
-            <option>Won't Have</option>
-          </select>
-        </div>
-        <div class="form-group span-2">
-          <label>Requirement Title</label>
-          <input id="f-title" type="text" placeholder="Short descriptive title" />
-        </div>
-        <div class="form-group span-2">
-          <label>Requirement Description</label>
-          <textarea id="f-description" placeholder="The system shall…"></textarea>
-        </div>
-        <div class="form-group span-2">
-          <label>Acceptance Criteria</label>
-          <textarea id="f-acceptance" placeholder="Acceptance criteria…"></textarea>
-        </div>
-        <div class="form-group">
-          <label>Source / Stakeholder</label>
-          <input id="f-source" type="text" />
-        </div>
-        <div class="form-group">
-          <label>Status</label>
-          <select id="f-status">
+      <!-- ─── REQUIREMENTS REGISTER ─────────────── -->
+      <div class="panel" id="panel-register">
+        <div class="toolbar">
+          <input
+            class="search-box"
+            type="text"
+            placeholder="Search requirements…"
+            oninput="filterRegister(this.value)" />
+          <select class="filter-select" onchange="filterStatus(this.value)">
+            <option value="">All Statuses</option>
             <option>Draft</option>
             <option>In Review</option>
             <option>Approved</option>
@@ -573,663 +824,1105 @@
             <option>Rejected</option>
             <option>Closed</option>
           </select>
-        </div>
-        <div class="form-group">
-          <label>Assigned To</label>
-          <input id="f-assigned" type="text" />
-        </div>
-        <div class="form-group">
-          <label>Due Date</label>
-          <input id="f-due" type="date" />
-        </div>
-        <div class="form-group">
-          <label>Version</label>
-          <input id="f-version" type="text" placeholder="1.0" />
-        </div>
-        <div class="form-group">
-          <label>Dependencies</label>
-          <input id="f-dependencies" type="text" placeholder="REQ-002, REQ-005" />
-        </div>
-        <div class="form-group">
-          <label>Test Case Ref</label>
-          <input id="f-testref" type="text" placeholder="TC-001" />
-        </div>
-        <div class="form-group">
-          <label>Test Status</label>
-          <select id="f-teststatus">
-            <option value="">—</option>
-            <option>Pass</option>
-            <option>Fail</option>
-            <option>Not Run</option>
-            <option>In Progress</option>
+          <select class="filter-select" onchange="filterPriority(this.value)">
+            <option value="">All Priorities</option>
+            <option>Must Have</option>
+            <option>Should Have</option>
+            <option>Could Have</option>
+            <option>Won't Have</option>
           </select>
+          <button class="btn-add" onclick="openModal()">
+            + Add Requirement
+          </button>
         </div>
-        <div class="form-group">
-          <label>UAT Result</label>
-          <select id="f-uat">
-            <option value="">—</option>
-            <option>Pass</option>
-            <option>Fail</option>
-            <option>Pending</option>
-          </select>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>REQ ID</th>
+                <th>Category</th>
+                <th>Title</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Assigned To</th>
+                <th>Due Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="register-tbody"></tbody>
+          </table>
         </div>
-        <div class="form-group">
-          <label>Sign-off Owner</label>
-          <input id="f-signoff" type="text" />
+      </div>
+
+      <!-- ─── VERIFICATION ──────────────────────── -->
+      <div class="panel" id="panel-verification">
+        <div class="toolbar">
+          <input
+            class="search-box"
+            type="text"
+            placeholder="Search…"
+            oninput="filterVerification(this.value)" />
         </div>
-        <div class="form-group span-2">
-          <label>Comments / Notes</label>
-          <textarea id="f-comments" style="min-height:60px"></textarea>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>REQ ID</th>
+                <th>Title</th>
+                <th>Method</th>
+                <th>Complete?</th>
+                <th>Correct?</th>
+                <th>Unambiguous?</th>
+                <th>Testable?</th>
+                <th>Status</th>
+                <th>Reviewer</th>
+                <th>Approver</th>
+                <th>Comments</th>
+              </tr>
+            </thead>
+            <tbody id="verification-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ─── TRACEABILITY ──────────────────────── -->
+      <div class="panel" id="panel-traceability">
+        <div class="toolbar">
+          <input
+            class="search-box"
+            type="text"
+            placeholder="Search…"
+            oninput="filterTraceability(this.value)" />
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>REQ ID</th>
+                <th>Title</th>
+                <th>Business Objective</th>
+                <th>Spec Ref</th>
+                <th>Design Ref</th>
+                <th>Dev Item</th>
+                <th>Test Case</th>
+                <th>Test Result</th>
+                <th>Defect Ref</th>
+                <th>Traceability</th>
+                <th>Coverage %</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody id="traceability-tbody"></tbody>
+          </table>
         </div>
       </div>
     </div>
-    <div class="modal-footer">
-      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-      <button class="btn-save" onclick="saveRequirement()">Save Requirement</button>
-    </div>
-  </div>
-</div>
 
-
-<!-- ─── SYNC MODAL ─────────────────────────────────────────── -->
-<div class="modal-bg" id="sync-modal-bg" onclick="if(event.target===this)closeSyncModal()">
-  <div class="modal" style="max-width:520px">
-    <div class="modal-header">
-      <div class="modal-title">Google Sheet Sync</div>
-      <button class="modal-close" onclick="closeSyncModal()">×</button>
-    </div>
-    <div class="modal-body">
-      <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:20px">
-        Enter your Apps Script Web App URL to push data to (or pull from) your Google Sheet.<br>
-        See the Apps Script code in the HTML file comments, or ask for it.
-      </p>
-      <div class="form-group" style="margin-bottom:20px">
-        <label>Apps Script Web App URL</label>
-        <input id="sync-url-input" type="url" placeholder="https://script.google.com/macros/s/.../exec"
-          style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);
-                 padding:10px 14px;color:var(--text);font-family:var(--font-mono);font-size:12px;
-                 outline:none;width:100%" />
-      </div>
-      <div style="display:flex;gap:10px">
-        <button class="btn-save" onclick="doSync('push')" style="flex:1">⬆ Push to Sheet</button>
-        <button class="btn-cancel" onclick="doSync('pull')" style="flex:1;border-color:var(--accent);color:var(--accent)">⬇ Pull from Sheet</button>
-      </div>
-      <p style="font-size:11px;color:var(--muted);margin-top:14px;line-height:1.6">
-        <strong>Push</strong> overwrites the Sheet with your local data.<br>
-        <strong>Pull</strong> loads from the Sheet into this tool (requires the file to be hosted on a server, not opened locally).
-      </p>
-    </div>
-  </div>
-</div>
-
-<!-- ─── TOAST ──────────────────────────────────────────────── -->
-<div id="toast"></div>
-
-<script>
-/* ══════════════════════════════════════════════════════════
-   STATE
-══════════════════════════════════════════════════════════ */
-let SHEET_URL = '';
-let data = { requirements: [], verification: [], traceability: [] };
-let activeFilters = { search: '', status: '', priority: '' };
-
-/* ══════════════════════════════════════════════════════════
-   STARTUP
-══════════════════════════════════════════════════════════ */
-function startApp() {
-  const hadData = loadLocal();
-  if (!hadData) data = { requirements: [], verification: [], traceability: [] };
-  document.getElementById('setup-overlay').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
-  setSyncStatus('ok', hadData ? 'Loaded from storage' : 'Ready — no data yet');
-  renderAll();
-}
-
-function useDemoData(e) {
-  if (e) e.preventDefault();
-  data = buildDemoData();
-  saveLocal();
-  document.getElementById('setup-overlay').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
-  setSyncStatus('ok', 'Demo data loaded');
-  renderAll();
-}
-
-function openSyncModal() {
-  document.getElementById('sync-modal-bg').classList.add('open');
-}
-function closeSyncModal() {
-  document.getElementById('sync-modal-bg').classList.remove('open');
-}
-async function doSync(direction) {
-  const url = document.getElementById('sync-url-input').value.trim();
-  if (!url || !url.startsWith('https://script.google.com')) {
-    toast('Please enter a valid Apps Script URL', 'err'); return;
-  }
-  closeSyncModal();
-  if (direction === 'push') await pushToSheet(url);
-  else await pullFromSheet(url);
-}
-
-/* ══════════════════════════════════════════════════════════
-   STORAGE — localStorage primary, Google Sheet as export target
-══════════════════════════════════════════════════════════ */
-
-const LS_KEY = 'ba_data';
-
-function saveLocal() {
-  try {
-    localStorage.setItem(LS_KEY, JSON.stringify(data));
-    setSyncStatus('ok', 'Saved locally');
-  } catch(e) {
-    setSyncStatus('err', 'Local save failed');
-  }
-}
-
-function loadLocal() {
-  try {
-    const raw = localStorage.getItem(LS_KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      data.requirements = parsed.requirements || [];
-      data.verification  = parsed.verification  || [];
-      data.traceability  = parsed.traceability  || [];
-      return true;
-    }
-  } catch(e) {}
-  return false;
-}
-
-// Alias used throughout the app — just saves locally now
-function saveToSheet(sheetName, rows) {
-  saveLocal();
-}
-
-/* ══════════════════════════════════════════════════════════
-   GOOGLE SHEET PUSH  (manual export via Apps Script)
-
-   HOW TO USE GOOGLE SHEETS SYNC:
-   1. Open your Google Sheet
-   2. Extensions → Apps Script → paste the code below → Save
-   3. Deploy → New deployment → Web App
-      · Execute as: Me
-      · Who has access: Anyone
-   4. Copy the /exec URL
-   5. Click "Push to Sheet" in the toolbar and paste the URL
-
-   ── Apps Script code ──────────────────────────────────────
-
-   function doPost(e) {
-     try {
-       const body  = JSON.parse(e.postData.contents);
-       const ss    = SpreadsheetApp.getActiveSpreadsheet();
-       writeSheet(ss, 'Requirements Register', body.requirements);
-       writeSheet(ss, 'Verification & Sign-Off', body.verification);
-       writeSheet(ss, 'Traceability Matrix', body.traceability);
-       return out('{"ok":true}');
-     } catch(err) {
-       return out('{"ok":false,"error":"' + err.message + '"}');
-     }
-   }
-
-   function writeSheet(ss, name, rows) {
-     if (!rows || !rows.length) return;
-     const sheet   = ss.getSheetByName(name);
-     if (!sheet) return;
-     const lastCol = sheet.getLastColumn();
-     const lastRow = sheet.getLastRow();
-     const headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
-     if (lastRow > 1) sheet.getRange(2, 1, lastRow - 1, lastCol).clearContent();
-     rows.forEach((row, i) => {
-       const vals = headers.map(h => row[h] !== undefined ? row[h] : '');
-       sheet.getRange(i + 2, 1, 1, headers.length).setValues([vals]);
-     });
-   }
-
-   function doGet(e) {
-     const ss    = SpreadsheetApp.getActiveSpreadsheet();
-     const reqs  = readSheet(ss, 'Requirements Register');
-     const verif = readSheet(ss, 'Verification & Sign-Off');
-     const trace = readSheet(ss, 'Traceability Matrix');
-     return out(JSON.stringify({ requirements: reqs, verification: verif, traceability: trace }));
-   }
-
-   function readSheet(ss, name) {
-     const sheet = ss.getSheetByName(name);
-     if (!sheet) return [];
-     const vals = sheet.getDataRange().getValues();
-     if (vals.length < 2) return [];
-     const headers = vals[0];
-     return vals.slice(1).map(r => {
-       const obj = {};
-       headers.forEach((h, i) => { obj[h] = r[i] instanceof Date ? Utilities.formatDate(r[i], 'UTC', 'yyyy-MM-dd') : r[i]; });
-       return obj;
-     });
-   }
-
-   function out(text) {
-     return ContentService.createTextOutput(text)
-       .setMimeType(ContentService.MimeType.JSON);
-   }
-
-   ──────────────────────────────────────────────────────── */
-
-async function pushToSheet(url) {
-  if (!url) return;
-  setSyncStatus('saving', 'Pushing to Sheet…');
-  try {
-    const res = await fetch(url, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({ requirements: data.requirements, verification: data.verification, traceability: data.traceability })
-    });
-    setSyncStatus('ok', 'Pushed to Sheet ✓');
-    toast('Data pushed to Google Sheet ✓');
-  } catch(e) {
-    setSyncStatus('err', 'Push failed');
-    toast('Push failed — check your Apps Script URL', 'err');
-  }
-}
-
-async function pullFromSheet(url) {
-  if (!url) return;
-  setSyncStatus('saving', 'Pulling from Sheet…');
-  try {
-    const res = await fetch(url + '?t=' + Date.now());
-    const json = await res.json();
-    data.requirements = json.requirements || [];
-    data.verification  = json.verification  || [];
-    data.traceability  = json.traceability  || [];
-    saveLocal();
-    renderAll();
-    setSyncStatus('ok', 'Pulled from Sheet ✓');
-    toast('Data pulled from Google Sheet ✓');
-  } catch(e) {
-    setSyncStatus('err', 'Pull failed');
-    toast('Pull failed — this only works when the HTML is hosted on a server (not opened as a file). Use Push instead.', 'err');
-  }
-}
-
-/* ══════════════════════════════════════════════════════════
-   DEMO DATA
-══════════════════════════════════════════════════════════ */
-function buildDemoData() {
-  const requirements = [
-    { 'REQ ID':'REQ-001','Category':'Functional','Sub-Category':'Portal One','Requirement Title':'Add Signature to Permit Confirmation','Requirement Description':'The system shall allow users to sign after the proxy processes the permit.','Priority\n(MoSCoW)':'Must Have','Source /\nStakeholder':'Client (ICS – Berhanu & Rediet)','Acceptance Criteria':'Signature captured and stored on confirmation','Status':'In Review','Assigned To':'Kedir','Due Date':'2026-02-04','Version':'1.0','Dependencies':'','Test Case Ref':'','Test Status':'Pass','UAT Result':'Pending','Sign-off Owner':'J. Brown','Comments / Notes':''},
-    { 'REQ ID':'REQ-002','Category':'Functional','Sub-Category':'Reporting','Requirement Title':'Analytics & Reporting','Requirement Description':'Users shall be able to reset their password via a time-limited email link.','Priority\n(MoSCoW)':'Must Have','Source /\nStakeholder':'Client (ICS – Berhanu & Rediet)','Acceptance Criteria':'','Status':'In Review','Assigned To':'Kedir','Due Date':'2026-02-04','Version':'1.0','Dependencies':'','Test Case Ref':'','Test Status':'','UAT Result':'','Sign-off Owner':'','Comments / Notes':''},
-    { 'REQ ID':'REQ-003','Category':'Functional','Sub-Category':'Portal One','Requirement Title':'Company Reference Investment Commission','Requirement Description':'','Priority\n(MoSCoW)':'Could Have','Source /\nStakeholder':'Client (ICS – Berhanu & Rediet)','Acceptance Criteria':'','Status':'In Review','Assigned To':'Kedir','Due Date':'2026-02-04','Version':'1.0','Dependencies':'','Test Case Ref':'','Test Status':'','UAT Result':'','Sign-off Owner':'','Comments / Notes':''},
-    { 'REQ ID':'REQ-004','Category':'Functional','Sub-Category':'','Requirement Title':'Mesob Service Date / Price','Requirement Description':'Service date / price configuration','Priority\n(MoSCoW)':'Must Have','Source /\nStakeholder':'Client (ICS – Berhanu & Rediet)','Acceptance Criteria':'','Status':'Draft','Assigned To':'','Due Date':'','Version':'1.0','Dependencies':'','Test Case Ref':'','Test Status':'','UAT Result':'','Sign-off Owner':'','Comments / Notes':''},
-    { 'REQ ID':'REQ-005','Category':'Security','Sub-Category':'','Requirement Title':'Data Encryption at Rest','Requirement Description':'All sensitive data must be encrypted using AES-256.','Priority\n(MoSCoW)':'Must Have','Source /\nStakeholder':'CISO','Acceptance Criteria':'Pen-test passes without data exposure','Status':'Approved','Assigned To':'DevOps','Due Date':'2026-03-01','Version':'1.0','Dependencies':'','Test Case Ref':'TC-021','Test Status':'Not Run','UAT Result':'','Sign-off Owner':'CISO','Comments / Notes':'Pen-test scheduled Q2'},
-    { 'REQ ID':'REQ-006','Category':'Functional','Sub-Category':'Dashboard','Requirement Title':'KPI Dashboard','Requirement Description':'Provide a real-time KPI dashboard for management.','Priority\n(MoSCoW)':'Should Have','Source /\nStakeholder':'Management','Acceptance Criteria':'Loads in under 3s with live data','Status':'Draft','Assigned To':'A. Singh','Due Date':'2026-04-15','Version':'1.0','Dependencies':'REQ-002','Test Case Ref':'','Test Status':'','UAT Result':'','Sign-off Owner':'','Comments / Notes':'Requires rework – scope TBC'},
-  ];
-
-  const verification = [
-    { 'REQ ID':'REQ-001','Requirement Title':'Add Signature to Permit Confirmation','Verif. Method':'Review','Criteria Met?':'Yes','Complete?':'Yes','Correct?':'Yes','Unambiguous?':'Yes','Testable?':'Yes','Overall\nVerif. Status':'Verified','Reviewer':'J. Brown','Review Date':'28/04/2026','Stakeholder\nApprover':'CTO','Approval Date':'29/04/2026','Sign-off Comments':'Approved for build'},
-    { 'REQ ID':'REQ-002','Requirement Title':'Analytics & Reporting','Verif. Method':'Testing','Criteria Met?':'Yes','Complete?':'Yes','Correct?':'Yes','Unambiguous?':'Yes','Testable?':'Yes','Overall\nVerif. Status':'Verified','Reviewer':'J. Brown','Review Date':'28/04/2026','Stakeholder\nApprover':'CTO','Approval Date':'29/04/2026','Sign-off Comments':''},
-    { 'REQ ID':'REQ-003','Requirement Title':'Company Reference Investment Commission','Verif. Method':'Review','Criteria Met?':'Partial','Complete?':'Yes','Correct?':'Yes','Unambiguous?':'No','Testable?':'Yes','Overall\nVerif. Status':'In Review','Reviewer':'A. Singh','Review Date':'30/04/2026','Stakeholder\nApprover':'','Approval Date':'','Sign-off Comments':'Acceptance criteria needs refinement'},
-    { 'REQ ID':'REQ-004','Requirement Title':'Mesob Service Date / Price','Verif. Method':'Analysis','Criteria Met?':'Yes','Complete?':'Yes','Correct?':'Yes','Unambiguous?':'Yes','Testable?':'Yes','Overall\nVerif. Status':'Verified','Reviewer':'DevOps Lead','Review Date':'28/04/2026','Stakeholder\nApprover':'Arch. Board','Approval Date':'29/04/2026','Sign-off Comments':'NFR accepted'},
-    { 'REQ ID':'REQ-005','Requirement Title':'Data Encryption at Rest','Verif. Method':'Inspection','Criteria Met?':'Yes','Complete?':'Yes','Correct?':'Yes','Unambiguous?':'Yes','Testable?':'Yes','Overall\nVerif. Status':'Verified','Reviewer':'Security','Review Date':'27/04/2026','Stakeholder\nApprover':'CISO','Approval Date':'28/04/2026','Sign-off Comments':'Pen-test scheduled Q2'},
-    { 'REQ ID':'REQ-006','Requirement Title':'KPI Dashboard','Verif. Method':'Walk-Through','Criteria Met?':'No','Complete?':'Yes','Correct?':'No','Unambiguous?':'No','Testable?':'Yes','Overall\nVerif. Status':'Failed','Reviewer':'A. Singh','Review Date':'30/04/2026','Stakeholder\nApprover':'','Approval Date':'','Sign-off Comments':'Requires rework – scope TBC'},
-  ];
-
-  const traceability = [
-    { 'REQ ID':'REQ-001','Requirement Title':'Add Signature to Permit Confirmation','Business Objective':'BO-01: Secure Access','Functional\nSpec Ref':'FS-001','Design\nDoc Ref':'DD-001','Development\nItem':'US-101','Test Case\nRef':'TC-001','Test Result':'Pass','Defect Ref':'','Traceability\nStatus':'Fully Traced','Coverage %':'100%','Notes':''},
-    { 'REQ ID':'REQ-002','Requirement Title':'Analytics & Reporting','Business Objective':'BO-02: Data Access','Functional\nSpec Ref':'FS-002','Design\nDoc Ref':'DD-001','Development\nItem':'US-102','Test Case\nRef':'TC-002','Test Result':'Not Run','Defect Ref':'','Traceability\nStatus':'Partially Traced','Coverage %':'75%','Notes':'Test not yet executed'},
-    { 'REQ ID':'REQ-003','Requirement Title':'Company Reference Investment Commission','Business Objective':'BO-02: Data Access','Functional\nSpec Ref':'FS-003','Design\nDoc Ref':'DD-003','Development\nItem':'US-105','Test Case\nRef':'TC-010','Test Result':'Not Run','Defect Ref':'','Traceability\nStatus':'Partially Traced','Coverage %':'50%','Notes':'Design pending'},
-    { 'REQ ID':'REQ-004','Requirement Title':'Mesob Service Date / Price','Business Objective':'BO-03: Performance','Functional\nSpec Ref':'NFR-001','Design\nDoc Ref':'DD-004','Development\nItem':'PBI-201','Test Case\nRef':'TC-020','Test Result':'Not Run','Defect Ref':'','Traceability\nStatus':'Partially Traced','Coverage %':'60%','Notes':'NFR verification pending'},
-    { 'REQ ID':'REQ-005','Requirement Title':'Data Encryption at Rest','Business Objective':'BO-04: Security','Functional\nSpec Ref':'NFR-002','Design\nDoc Ref':'DD-005','Development\nItem':'PBI-202','Test Case\nRef':'TC-021','Test Result':'Not Run','Defect Ref':'','Traceability\nStatus':'Partially Traced','Coverage %':'70%','Notes':'Pen test TBD'},
-    { 'REQ ID':'REQ-006','Requirement Title':'KPI Dashboard','Business Objective':'BO-02: Data Access','Functional\nSpec Ref':'FS-006','Design\nDoc Ref':'','Development\nItem':'','Test Case\nRef':'','Test Result':'Not Run','Defect Ref':'','Traceability\nStatus':'Not Traced','Coverage %':'20%','Notes':'Design not started'},
-  ];
-
-  return { requirements, verification, traceability };
-}
-
-/* ══════════════════════════════════════════════════════════
-   RENDER ALL
-══════════════════════════════════════════════════════════ */
-function renderAll() {
-  renderDashboard();
-  renderRegister();
-  renderVerification();
-  renderTraceability();
-}
-
-/* ══════════════════════════════════════════════════════════
-   DASHBOARD
-══════════════════════════════════════════════════════════ */
-function renderDashboard() {
-  const reqs = data.requirements;
-  const total = reqs.length;
-  const approved = reqs.filter(r => r['Status'] === 'Approved').length;
-  const inProgress = reqs.filter(r => r['Status'] === 'In Progress').length;
-  const draft = reqs.filter(r => ['Draft','In Review'].includes(r['Status'])).length;
-  const verif = data.verification.filter(v => v['Overall\nVerif. Status'] === 'Verified').length;
-  const pct = total > 0 ? Math.round((verif / total) * 100) : 0;
-
-  const kpis = [
-    { label: 'Total Requirements', value: total, sub: '' },
-    { label: 'Approved', value: approved, sub: `${total > 0 ? Math.round(approved/total*100) : 0}% of total` },
-    { label: 'In Progress', value: inProgress, sub: '' },
-    { label: 'Draft / In Review', value: draft, sub: '' },
-    { label: '% Verified', value: pct + '%', sub: `${verif} of ${total}` },
-  ];
-
-  document.getElementById('kpi-grid').innerHTML = kpis.map(k => `
-    <div class="kpi-card">
-      <div class="kpi-label">${k.label}</div>
-      <div class="kpi-value">${k.value}</div>
-      ${k.sub ? `<div class="kpi-sub">${k.sub}</div>` : ''}
-    </div>
-  `).join('');
-
-  // Priority chart
-  const priMap = { 'Must Have': { color: '#e05252' }, 'Should Have': { color: '#4c8fe0' }, 'Could Have': { color: '#9b72e0' }, "Won't Have": { color: '#6b7280' } };
-  const priCounts = {};
-  reqs.forEach(r => {
-    const p = r['Priority\n(MoSCoW)'] || "Won't Have";
-    priCounts[p] = (priCounts[p] || 0) + 1;
-  });
-  document.getElementById('priority-chart').innerHTML = Object.entries(priMap).map(([label, {color}]) => {
-    const count = priCounts[label] || 0;
-    const pct = total > 0 ? (count / total * 100) : 0;
-    return `<div class="bar-row">
-      <div class="bar-label">${label}</div>
-      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${color}"></div></div>
-      <div class="bar-count">${count}</div>
-    </div>`;
-  }).join('');
-
-  // Status chart
-  const statMap = { 'Approved': '#4caf7d', 'In Progress': '#e09a3c', 'In Review': '#4c8fe0', 'Draft': '#6b7280', 'Rejected': '#e05252', 'Closed': '#e05252' };
-  const statCounts = {};
-  reqs.forEach(r => { const s = r['Status'] || 'Draft'; statCounts[s] = (statCounts[s] || 0) + 1; });
-  document.getElementById('status-chart').innerHTML = Object.entries(statMap).map(([label, color]) => {
-    const count = statCounts[label] || 0;
-    const pct = total > 0 ? (count / total * 100) : 0;
-    return `<div class="bar-row">
-      <div class="bar-label">${label}</div>
-      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${color}"></div></div>
-      <div class="bar-count">${count}</div>
-    </div>`;
-  }).join('');
-}
-
-/* ══════════════════════════════════════════════════════════
-   REQUIREMENTS REGISTER
-══════════════════════════════════════════════════════════ */
-function getFilteredReqs() {
-  return data.requirements.filter(r => {
-    const s = activeFilters.search.toLowerCase();
-    const matchSearch = !s || [r['REQ ID'], r['Requirement Title'], r['Category'], r['Assigned To']].join(' ').toLowerCase().includes(s);
-    const matchStatus = !activeFilters.status || r['Status'] === activeFilters.status;
-    const matchPriority = !activeFilters.priority || r['Priority\n(MoSCoW)'] === activeFilters.priority;
-    return matchSearch && matchStatus && matchPriority;
-  });
-}
-
-function priorityBadge(p) {
-  const map = { 'Must Have': 'must', 'Should Have': 'should', 'Could Have': 'could', "Won't Have": 'wont' };
-  return `<span class="badge ${map[p] || 'wont'}">${p || '—'}</span>`;
-}
-
-function statusCell(s) {
-  const cls = (s || '').toLowerCase().replace(/\s+/g, '-').replace(/\//g, '');
-  return `<div class="status-text"><span class="status-dot st-${cls}"></span>${s || 'Draft'}</div>`;
-}
-
-function renderRegister() {
-  const rows = getFilteredReqs();
-  const tbody = document.getElementById('register-tbody');
-  if (!rows.length) {
-    tbody.innerHTML = `<tr><td colspan="8"><div class="empty">No requirements found.</div></td></tr>`;
-    return;
-  }
-  tbody.innerHTML = rows.map((r, i) => {
-    const idx = data.requirements.indexOf(r);
-    return `<tr>
-      <td><span class="req-id">${r['REQ ID'] || ''}</span></td>
-      <td>${r['Category'] || '—'}</td>
-      <td style="max-width:240px">${r['Requirement Title'] || '—'}</td>
-      <td>${priorityBadge(r['Priority\n(MoSCoW)'])}</td>
-      <td>${statusCell(r['Status'])}</td>
-      <td>${r['Assigned To'] || '—'}</td>
-      <td style="white-space:nowrap">${r['Due Date'] || '—'}</td>
-      <td>
-        <div class="actions">
-          <button class="btn-icon" onclick="openModal(${idx})" title="Edit">✎</button>
-          <button class="btn-icon del" onclick="deleteReq(${idx})" title="Delete">✕</button>
+    <!-- ─── ADD/EDIT MODAL ─────────────────────────────────────── -->
+    <div class="modal-bg" id="modal-bg" onclick="handleModalBgClick(event)">
+      <div class="modal">
+        <div class="modal-header">
+          <div class="modal-title" id="modal-title">Add Requirement</div>
+          <button class="modal-close" onclick="closeModal()">×</button>
         </div>
-      </td>
-    </tr>`;
-  }).join('');
-}
-
-function filterRegister(v) { activeFilters.search = v; renderRegister(); }
-function filterStatus(v) { activeFilters.status = v; renderRegister(); }
-function filterPriority(v) { activeFilters.priority = v; renderRegister(); }
-
-/* ══════════════════════════════════════════════════════════
-   VERIFICATION
-══════════════════════════════════════════════════════════ */
-let verifFilter = '';
-function filterVerification(v) { verifFilter = v.toLowerCase(); renderVerification(); }
-
-function renderVerification() {
-  const rows = data.verification.filter(r =>
-    !verifFilter || JSON.stringify(r).toLowerCase().includes(verifFilter)
-  );
-  const tbody = document.getElementById('verification-tbody');
-  if (!rows.length) {
-    tbody.innerHTML = `<tr><td colspan="11"><div class="empty">No verification records.</div></td></tr>`;
-    return;
-  }
-  const stColors = { Verified: '#4caf7d', 'In Review': '#4c8fe0', Failed: '#e05252', Pending: '#e09a3c' };
-  tbody.innerHTML = rows.map((r, i) => {
-    const vs = r['Overall\nVerif. Status'] || 'Pending';
-    const color = stColors[vs] || '#6b7280';
-    const idx = data.verification.indexOf(r);
-    const yn = (v) => `<select class="inline-select" onchange="updateVerif(${idx},'${v}',this.value)">
-      ${['Yes','No','Partial','N/A'].map(o=>`<option ${r[v]===o?'selected':''}>${o}</option>`).join('')}
-    </select>`;
-    return `<tr>
-      <td><span class="req-id">${r['REQ ID']||''}</span></td>
-      <td style="max-width:180px">${r['Requirement Title']||'—'}</td>
-      <td>${r['Verif. Method']||'—'}</td>
-      <td>${yn('Complete?')}</td>
-      <td>${yn('Correct?')}</td>
-      <td>${yn('Unambiguous?')}</td>
-      <td>${yn('Testable?')}</td>
-      <td><span style="color:${color};font-weight:600;font-size:11px">${vs}</span></td>
-      <td>${r['Reviewer']||'—'}</td>
-      <td>${r['Stakeholder\nApprover']||'—'}</td>
-      <td style="max-width:200px;font-size:11px;color:var(--muted)">${r['Sign-off Comments']||''}</td>
-    </tr>`;
-  }).join('');
-}
-
-function updateVerif(idx, field, value) {
-  data.verification[idx][field] = value;
-  // Auto-recalc overall status
-  const r = data.verification[idx];
-  const checks = [r['Complete?'], r['Correct?'], r['Unambiguous?'], r['Testable?']];
-  if (checks.every(c => c === 'Yes')) r['Overall\nVerif. Status'] = 'Verified';
-  else if (checks.some(c => c === 'No')) r['Overall\nVerif. Status'] = 'Failed';
-  else r['Overall\nVerif. Status'] = 'In Review';
-  renderVerification();
-  renderDashboard();
-  saveToSheet('Verification & Sign-Off', data.verification);
-}
-
-/* ══════════════════════════════════════════════════════════
-   TRACEABILITY
-══════════════════════════════════════════════════════════ */
-let traceFilter = '';
-function filterTraceability(v) { traceFilter = v.toLowerCase(); renderTraceability(); }
-
-function renderTraceability() {
-  const rows = data.traceability.filter(r =>
-    !traceFilter || JSON.stringify(r).toLowerCase().includes(traceFilter)
-  );
-  const tbody = document.getElementById('traceability-tbody');
-  if (!rows.length) {
-    tbody.innerHTML = `<tr><td colspan="12"><div class="empty">No traceability records.</div></td></tr>`;
-    return;
-  }
-  const traceColors = { 'Fully Traced': '#4caf7d', 'Partially Traced': '#e09a3c', 'Not Traced': '#e05252' };
-  const testColors = { 'Pass': '#4caf7d', 'Fail': '#e05252', 'Not Run': '#6b7280', 'In Progress': '#e09a3c' };
-  tbody.innerHTML = rows.map(r => {
-    const tc = traceColors[r['Traceability\nStatus']] || '#6b7280';
-    const tres = r['Test Result'] || 'Not Run';
-    const tresColor = testColors[tres] || '#6b7280';
-    const cov = parseInt(r['Coverage %'] || '0');
-    return `<tr>
-      <td><span class="req-id">${r['REQ ID']||''}</span></td>
-      <td style="max-width:160px">${r['Requirement Title']||'—'}</td>
-      <td style="max-width:140px;font-size:12px">${r['Business Objective']||'—'}</td>
-      <td style="font-family:var(--font-mono);font-size:11px">${r['Functional\nSpec Ref']||'—'}</td>
-      <td style="font-family:var(--font-mono);font-size:11px">${r['Design\nDoc Ref']||'—'}</td>
-      <td style="font-family:var(--font-mono);font-size:11px">${r['Development\nItem']||'—'}</td>
-      <td style="font-family:var(--font-mono);font-size:11px">${r['Test Case\nRef']||'—'}</td>
-      <td><span style="color:${tresColor};font-size:11px;font-weight:600">${tres}</span></td>
-      <td style="font-family:var(--font-mono);font-size:11px">${r['Defect Ref']||'—'}</td>
-      <td><span style="color:${tc};font-size:11px;font-weight:600">${r['Traceability\nStatus']||'—'}</span></td>
-      <td>
-        <div style="display:flex;align-items:center;gap:8px">
-          <div class="bar-track" style="width:60px">
-            <div class="bar-fill" style="width:${cov}%;background:${tc}"></div>
+        <div class="modal-body">
+          <input type="hidden" id="f-index" value="-1" />
+          <div class="form-grid">
+            <div class="form-group">
+              <label>REQ ID</label>
+              <input id="f-id" type="text" placeholder="REQ-001" />
+            </div>
+            <div class="form-group">
+              <label>Category</label>
+              <select id="f-category">
+                <option>Functional</option>
+                <option>Non-Functional</option>
+                <option>Technical</option>
+                <option>Compliance</option>
+                <option>Integration</option>
+                <option>Security</option>
+                <option>Performance</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Sub-Category</label>
+              <input
+                id="f-subcategory"
+                type="text"
+                placeholder="e.g. portal one" />
+            </div>
+            <div class="form-group">
+              <label>Priority (MoSCoW)</label>
+              <select id="f-priority">
+                <option>Must Have</option>
+                <option>Should Have</option>
+                <option>Could Have</option>
+                <option>Won't Have</option>
+              </select>
+            </div>
+            <div class="form-group span-2">
+              <label>Requirement Title</label>
+              <input
+                id="f-title"
+                type="text"
+                placeholder="Short descriptive title" />
+            </div>
+            <div class="form-group span-2">
+              <label>Requirement Description</label>
+              <textarea
+                id="f-description"
+                placeholder="The system shall…"></textarea>
+            </div>
+            <div class="form-group span-2">
+              <label>Acceptance Criteria</label>
+              <textarea
+                id="f-acceptance"
+                placeholder="Acceptance criteria…"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Source / Stakeholder</label>
+              <input id="f-source" type="text" />
+            </div>
+            <div class="form-group">
+              <label>Status</label>
+              <select id="f-status">
+                <option>Draft</option>
+                <option>In Review</option>
+                <option>Approved</option>
+                <option>In Progress</option>
+                <option>Rejected</option>
+                <option>Closed</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Assigned To</label>
+              <input id="f-assigned" type="text" />
+            </div>
+            <div class="form-group">
+              <label>Due Date</label>
+              <input id="f-due" type="date" />
+            </div>
+            <div class="form-group">
+              <label>Version</label>
+              <input id="f-version" type="text" placeholder="1.0" />
+            </div>
+            <div class="form-group">
+              <label>Dependencies</label>
+              <input
+                id="f-dependencies"
+                type="text"
+                placeholder="REQ-002, REQ-005" />
+            </div>
+            <div class="form-group">
+              <label>Test Case Ref</label>
+              <input id="f-testref" type="text" placeholder="TC-001" />
+            </div>
+            <div class="form-group">
+              <label>Test Status</label>
+              <select id="f-teststatus">
+                <option value="">—</option>
+                <option>Pass</option>
+                <option>Fail</option>
+                <option>Not Run</option>
+                <option>In Progress</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>UAT Result</label>
+              <select id="f-uat">
+                <option value="">—</option>
+                <option>Pass</option>
+                <option>Fail</option>
+                <option>Pending</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Sign-off Owner</label>
+              <input id="f-signoff" type="text" />
+            </div>
+            <div class="form-group span-2">
+              <label>Comments / Notes</label>
+              <textarea id="f-comments" style="min-height: 60px"></textarea>
+            </div>
           </div>
-          <span style="font-family:var(--font-mono);font-size:11px">${r['Coverage %']||'0%'}</span>
         </div>
-      </td>
-      <td style="max-width:160px;font-size:11px;color:var(--muted)">${r['Notes']||''}</td>
-    </tr>`;
-  }).join('');
-}
+        <div class="modal-footer">
+          <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+          <button class="btn-save" onclick="saveRequirement()">
+            Save Requirement
+          </button>
+        </div>
+      </div>
+    </div>
 
-/* ══════════════════════════════════════════════════════════
-   MODAL
-══════════════════════════════════════════════════════════ */
-function openModal(idx = -1) {
-  document.getElementById('f-index').value = idx;
-  const r = idx >= 0 ? data.requirements[idx] : {};
-  document.getElementById('modal-title').textContent = idx >= 0 ? 'Edit Requirement' : 'Add Requirement';
-  document.getElementById('f-id').value = r['REQ ID'] || nextReqId();
-  document.getElementById('f-category').value = r['Category'] || 'Functional';
-  document.getElementById('f-subcategory').value = r['Sub-Category'] || '';
-  document.getElementById('f-title').value = r['Requirement Title'] || '';
-  document.getElementById('f-description').value = r['Requirement Description'] || '';
-  document.getElementById('f-priority').value = r['Priority\n(MoSCoW)'] || 'Must Have';
-  document.getElementById('f-source').value = r['Source /\nStakeholder'] || '';
-  document.getElementById('f-acceptance').value = r['Acceptance Criteria'] || '';
-  document.getElementById('f-status').value = r['Status'] || 'Draft';
-  document.getElementById('f-assigned').value = r['Assigned To'] || '';
-  document.getElementById('f-due').value = r['Due Date'] ? r['Due Date'].split('T')[0] : '';
-  document.getElementById('f-version').value = r['Version'] || '1.0';
-  document.getElementById('f-dependencies').value = r['Dependencies'] || '';
-  document.getElementById('f-testref').value = r['Test Case Ref'] || '';
-  document.getElementById('f-teststatus').value = r['Test Status'] || '';
-  document.getElementById('f-uat').value = r['UAT Result'] || '';
-  document.getElementById('f-signoff').value = r['Sign-off Owner'] || '';
-  document.getElementById('f-comments').value = r['Comments / Notes'] || '';
-  document.getElementById('modal-bg').classList.add('open');
-}
+    <!-- ─── SYNC MODAL ─────────────────────────────────────────── -->
+    <div
+      class="modal-bg"
+      id="sync-modal-bg"
+      onclick="if (event.target === this) closeSyncModal();">
+      <div class="modal" style="max-width: 520px">
+        <div class="modal-header">
+          <div class="modal-title">Google Sheet Sync</div>
+          <button class="modal-close" onclick="closeSyncModal()">×</button>
+        </div>
+        <div class="modal-body">
+          <p
+            style="
+              font-size: 13px;
+              color: var(--muted);
+              line-height: 1.7;
+              margin-bottom: 20px;
+            ">
+            Paste your Apps Script Web App URL below. Once connected, every
+            add/edit/delete automatically syncs to your Google Sheet in real
+            time.
+          </p>
+          <div class="form-group" style="margin-bottom: 20px">
+            <label>Apps Script Web App URL</label>
+            <input
+              id="sync-url-input"
+              type="url"
+              placeholder="https://script.google.com/macros/s/.../exec"
+              style="
+                background: var(--surface2);
+                border: 1px solid var(--border);
+                border-radius: var(--radius);
+                padding: 10px 14px;
+                color: var(--text);
+                font-family: var(--font-mono);
+                font-size: 12px;
+                outline: none;
+                width: 100%;
+              " />
+          </div>
+          <div style="display: flex; gap: 10px; margin-bottom: 12px">
+            <button class="btn-save" onclick="doSync('pull')" style="flex: 1">
+              ⬇ Connect &amp; Load from Sheet
+            </button>
+            <button
+              class="btn-cancel"
+              onclick="doSync('push')"
+              style="
+                flex: 1;
+                border-color: var(--accent);
+                color: var(--accent);
+              ">
+              ⬆ Push Local → Sheet
+            </button>
+          </div>
+          <button
+            onclick="disconnectSheet()"
+            style="
+              background: none;
+              border: 1px solid var(--danger);
+              border-radius: var(--radius);
+              padding: 8px 16px;
+              color: var(--danger);
+              font-family: var(--font-body);
+              font-size: 12px;
+              cursor: pointer;
+              width: 100%;
+            ">
+            Disconnect Sheet
+          </button>
+          <p
+            style="
+              font-size: 11px;
+              color: var(--muted);
+              margin-top: 14px;
+              line-height: 1.6;
+            ">
+            <strong>Connect &amp; Load</strong> — pulls Sheet data into the tool
+            and saves the URL for auto-sync.<br />
+            <strong>Push Local → Sheet</strong> — if you have local data and
+            want to write it up to a fresh Sheet first.<br />
+            Once connected, all changes sync automatically.
+          </p>
+        </div>
+      </div>
+    </div>
 
-function closeModal() {
-  document.getElementById('modal-bg').classList.remove('open');
-}
+    <!-- ─── TOAST ──────────────────────────────────────────────── -->
+    <div id="toast"></div>
 
-function handleModalBgClick(e) {
-  if (e.target === document.getElementById('modal-bg')) closeModal();
-}
+    <script>
+            /* ══════════════════════════════════════════════════════════
+               STATE
+            ══════════════════════════════════════════════════════════ */
+            let SHEET_URL = localStorage.getItem('toppan_sheet_url') || '';
+            let data = { requirements: [], verification: [], traceability: [] };
+            let activeFilters = { search: '', status: '', priority: '' };
 
-function nextReqId() {
-  const ids = data.requirements.map(r => parseInt((r['REQ ID']||'REQ-000').replace('REQ-','')));
-  const max = ids.length ? Math.max(...ids) : 0;
-  return `REQ-${String(max + 1).padStart(3, '0')}`;
-}
+            /* ══════════════════════════════════════════════════════════
+               STARTUP
+            ══════════════════════════════════════════════════════════ */
+            function startApp() {
+              document.getElementById('setup-overlay').style.display = 'none';
+              document.getElementById('app').style.display = 'block';
+              if (SHEET_URL) {
+                pullFromSheet();
+              } else {
+                const hadLocal = loadLocal();
+                if (!hadLocal) data = { requirements: [], verification: [], traceability: [] };
+                setSyncStatus('warn', hadLocal ? 'Local data — no Sheet connected' : 'Ready — no data yet');
+                renderAll();
+              }
+            }
 
-function saveRequirement() {
-  const idx = parseInt(document.getElementById('f-index').value);
-  const req = {
-    'REQ ID': document.getElementById('f-id').value,
-    'Category': document.getElementById('f-category').value,
-    'Sub-Category': document.getElementById('f-subcategory').value,
-    'Requirement Title': document.getElementById('f-title').value,
-    'Requirement Description': document.getElementById('f-description').value,
-    'Priority\n(MoSCoW)': document.getElementById('f-priority').value,
-    'Source /\nStakeholder': document.getElementById('f-source').value,
-    'Acceptance Criteria': document.getElementById('f-acceptance').value,
-    'Status': document.getElementById('f-status').value,
-    'Assigned To': document.getElementById('f-assigned').value,
-    'Due Date': document.getElementById('f-due').value,
-    'Version': document.getElementById('f-version').value,
-    'Dependencies': document.getElementById('f-dependencies').value,
-    'Test Case Ref': document.getElementById('f-testref').value,
-    'Test Status': document.getElementById('f-teststatus').value,
-    'UAT Result': document.getElementById('f-uat').value,
-    'Sign-off Owner': document.getElementById('f-signoff').value,
-    'Comments / Notes': document.getElementById('f-comments').value,
-  };
+            function useDemoData(e) {
+              if (e) e.preventDefault();
+              data = buildDemoData();
+              saveLocal();
+              document.getElementById('setup-overlay').style.display = 'none';
+              document.getElementById('app').style.display = 'block';
+              setSyncStatus('ok', 'Demo data loaded');
+              renderAll();
+            }
 
-  if (idx >= 0) {
-    data.requirements[idx] = req;
-    toast('Requirement updated ✓');
-  } else {
-    data.requirements.push(req);
-    // Add default verification & traceability rows
-    data.verification.push({ 'REQ ID': req['REQ ID'], 'Requirement Title': req['Requirement Title'], 'Verif. Method':'Review','Complete?':'','Correct?':'','Unambiguous?':'','Testable?':'','Overall\nVerif. Status':'Pending','Reviewer':'','Review Date':'','Stakeholder\nApprover':'','Approval Date':'','Sign-off Comments':'' });
-    data.traceability.push({ 'REQ ID': req['REQ ID'], 'Requirement Title': req['Requirement Title'], 'Business Objective':'','Functional\nSpec Ref':'','Design\nDoc Ref':'','Development\nItem':'','Test Case\nRef':'','Test Result':'Not Run','Defect Ref':'','Traceability\nStatus':'Not Traced','Coverage %':'0%','Notes':'' });
-    toast('Requirement added ✓');
-  }
+            /* ══════════════════════════════════════════════════════════
+               LOCAL STORAGE (fallback / cache)
+            ══════════════════════════════════════════════════════════ */
+            const LS_KEY = 'toppan_ba_data';
 
-  closeModal();
-  renderAll();
-  saveToSheet('Requirements Register', data.requirements);
-}
+            function saveLocal() {
+              try { localStorage.setItem(LS_KEY, JSON.stringify(data)); } catch(e) {}
+            }
 
-function deleteReq(idx) {
-  if (!confirm(`Delete ${data.requirements[idx]['REQ ID']}?`)) return;
-  const id = data.requirements[idx]['REQ ID'];
-  data.requirements.splice(idx, 1);
-  data.verification = data.verification.filter(r => r['REQ ID'] !== id);
-  data.traceability = data.traceability.filter(r => r['REQ ID'] !== id);
-  renderAll();
-  saveToSheet('Requirements Register', data.requirements);
-  toast('Requirement deleted');
-}
+            function loadLocal() {
+              try {
+                const raw = localStorage.getItem(LS_KEY);
+                if (raw) {
+                  const p = JSON.parse(raw);
+                  data.requirements = p.requirements || [];
+                  data.verification  = p.verification  || [];
+                  data.traceability  = p.traceability  || [];
+                  return true;
+                }
+              } catch(e) {}
+              return false;
+            }
 
-/* ══════════════════════════════════════════════════════════
-   TABS
-══════════════════════════════════════════════════════════ */
-function switchTab(id) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('panel-' + id).classList.add('active');
-  event.target.classList.add('active');
-}
+            /* ══════════════════════════════════════════════════════════
+               GOOGLE SHEET SYNC
+            ══════════════════════════════════════════════════════════ */
 
-/* ══════════════════════════════════════════════════════════
-   UTILS
-══════════════════════════════════════════════════════════ */
-function setSyncStatus(state, label) {
-  const dot = document.getElementById('sync-dot');
-  document.getElementById('sync-label').textContent = label;
-  dot.className = 'dot';
-  if (state === 'ok') dot.classList.add('ok');
-  else if (state === 'saving') dot.classList.add('saving');
-  else if (state === 'err') dot.classList.add('err');
-}
+            // Pull all data FROM the Sheet
+            async function pullFromSheet() {
+              if (!SHEET_URL) return;
+              setSyncStatus('saving', 'Loading from Sheet…');
+              try {
+                const res = await fetch(SHEET_URL, { method: 'GET' });
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const json = await res.json();
+                if (json.error) throw new Error(json.error);
+                data.requirements = json.requirements || [];
+                data.verification  = json.verification  || [];
+                data.traceability  = json.traceability  || [];
+                saveLocal();
+                renderAll();
+                setSyncStatus('ok', 'Synced with Sheet ✓');
+                toast('Loaded from Google Sheet ✓');
+              } catch(err) {
+                setSyncStatus('err', 'Sheet error — using local');
+                toast('Could not reach Sheet: ' + err.message, 'err');
+                loadLocal();
+                renderAll();
+              }
+            }
 
-let toastTimer;
-function toast(msg, type = 'ok') {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.style.borderColor = type === 'err' ? 'var(--danger)' : 'var(--success)';
-  el.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
-}
-</script>
-</body>
+            // Push all data TO the Sheet, then confirm with a pull
+            async function pushToSheet() {
+              if (!SHEET_URL) { openSyncModal(); return; }
+              setSyncStatus('saving', 'Saving to Sheet…');
+              try {
+                const res = await fetch(SHEET_URL, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'text/plain' },
+                  body: JSON.stringify({
+                    action: 'write',
+                    requirements: data.requirements,
+                    verification:  data.verification,
+                    traceability:  data.traceability
+                  })
+                });
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const json = await res.json();
+                if (!json.ok) throw new Error(json.error || 'Write failed');
+                setSyncStatus('ok', 'Saved to Sheet ✓');
+                toast('Saved to Google Sheet ✓');
+                saveLocal();
+              } catch(err) {
+                setSyncStatus('err', 'Save failed');
+                toast('Sheet save failed: ' + err.message, 'err');
+              }
+            }
+
+            // Called whenever data changes — saves to Sheet if connected, local otherwise
+            async function syncData() {
+              saveLocal();
+              if (SHEET_URL) await pushToSheet();
+            }
+
+            /* ══════════════════════════════════════════════════════════
+               SYNC MODAL
+            ══════════════════════════════════════════════════════════ */
+            function openSyncModal() {
+              document.getElementById('sync-url-input').value = SHEET_URL;
+              document.getElementById('sync-modal-bg').classList.add('open');
+            }
+            function closeSyncModal() {
+              document.getElementById('sync-modal-bg').classList.remove('open');
+            }
+            async function doSync(direction) {
+              const url = document.getElementById('sync-url-input').value.trim();
+              if (!url || !url.startsWith('https://script.google.com')) {
+                toast('Please enter a valid Apps Script URL', 'err'); return;
+              }
+              SHEET_URL = url;
+              localStorage.setItem('toppan_sheet_url', url);
+              closeSyncModal();
+              // Update topbar button label
+              document.querySelector('.btn-sync').textContent = '⇅ Sheet Connected';
+              if (direction === 'pull') await pullFromSheet();
+              else await pushToSheet();
+            }
+            function disconnectSheet() {
+              SHEET_URL = '';
+              localStorage.removeItem('toppan_sheet_url');
+              document.querySelector('.btn-sync').textContent = '⇅ Sync Sheet';
+              setSyncStatus('warn', 'Disconnected from Sheet');
+              toast('Sheet disconnected');
+              closeSyncModal();
+            }
+
+            /* ══════════════════════════════════════════════════════════
+               DEMO DATA
+            ══════════════════════════════════════════════════════════ */
+      function buildDemoData() {
+        const requirements = [
+          {
+            'REQ ID': 'REQ-001',
+            'Category': 'Functional',
+            'Sub-Category': 'Portal One',
+            'Requirement Title': 'Add Signature to Permit Confirmation',
+            'Requirement Description': 'The system shall allow users to sign after the proxy processes the permit.',
+            'Priority (MoSCoW)': 'Must Have',
+            'Source / Stakeholder': 'Client (ICS – Berhanu & Rediet)',
+            'Acceptance Criteria': 'Signature captured and stored on confirmation',
+            'Status': 'In Review',
+            'Assigned To': 'Kedir',
+            'Due Date': '2026-02-04',
+            'Version': '1.0',
+            'Dependencies': '',
+            'Test Case Ref': '',
+            'Test Status': 'Pass',
+            'UAT Result': 'Pending',
+            'Sign-off Owner': 'J. Brown',
+            'Comments / Notes': ''
+          },
+          {
+            'REQ ID': 'REQ-002',
+            'Category': 'Functional',
+            'Sub-Category': 'Reporting',
+            'Requirement Title': 'Analytics & Reporting',
+            'Requirement Description': 'Users shall be able to reset their password via a time-limited email link.',
+            'Priority (MoSCoW)': 'Must Have',
+            'Source / Stakeholder': 'Client (ICS – Berhanu & Rediet)',
+            'Acceptance Criteria': '',
+            'Status': 'In Review',
+            'Assigned To': 'Kedir',
+            'Due Date': '2026-02-04',
+            'Version': '1.0',
+            'Dependencies': '',
+            'Test Case Ref': '',
+            'Test Status': '',
+            'UAT Result': '',
+            'Sign-off Owner': '',
+            'Comments / Notes': ''
+          },
+          {
+            'REQ ID': 'REQ-003',
+            'Category': 'Functional',
+            'Sub-Category': 'Portal One',
+            'Requirement Title': 'Company Reference Investment Commission',
+            'Requirement Description': '',
+            'Priority (MoSCoW)': 'Could Have',
+            'Source / Stakeholder': 'Client (ICS – Berhanu & Rediet)',
+            'Acceptance Criteria': '',
+            'Status': 'In Review',
+            'Assigned To': 'Kedir',
+            'Due Date': '2026-02-04',
+            'Version': '1.0',
+            'Dependencies': '',
+            'Test Case Ref': '',
+            'Test Status': '',
+            'UAT Result': '',
+            'Sign-off Owner': '',
+            'Comments / Notes': ''
+          },
+          {
+            'REQ ID': 'REQ-004',
+            'Category': 'Functional',
+            'Sub-Category': '',
+            'Requirement Title': 'Mesob Service Date / Price',
+            'Requirement Description': 'Service date / price configuration',
+            'Priority (MoSCoW)': 'Must Have',
+            'Source / Stakeholder': 'Client (ICS – Berhanu & Rediet)',
+            'Acceptance Criteria': '',
+            'Status': 'Draft',
+            'Assigned To': '',
+            'Due Date': '',
+            'Version': '1.0',
+            'Dependencies': '',
+            'Test Case Ref': '',
+            'Test Status': '',
+            'UAT Result': '',
+            'Sign-off Owner': '',
+            'Comments / Notes': ''
+          },
+          {
+            'REQ ID': 'REQ-005',
+            'Category': 'Security',
+            'Sub-Category': '',
+            'Requirement Title': 'Data Encryption at Rest',
+            'Requirement Description': 'All sensitive data must be encrypted using AES-256.',
+            'Priority (MoSCoW)': 'Must Have',
+            'Source / Stakeholder': 'CISO',
+            'Acceptance Criteria': 'Pen-test passes without data exposure',
+            'Status': 'Approved',
+            'Assigned To': 'DevOps',
+            'Due Date': '2026-03-01',
+            'Version': '1.0',
+            'Dependencies': '',
+            'Test Case Ref': 'TC-021',
+            'Test Status': 'Not Run',
+            'UAT Result': '',
+            'Sign-off Owner': 'CISO',
+            'Comments / Notes': 'Pen-test scheduled Q2'
+          },
+          {
+            'REQ ID': 'REQ-006',
+            'Category': 'Functional',
+            'Sub-Category': 'Dashboard',
+            'Requirement Title': 'KPI Dashboard',
+            'Requirement Description': 'Provide a real-time KPI dashboard for management.',
+            'Priority (MoSCoW)': 'Should Have',
+            'Source / Stakeholder': 'Management',
+            'Acceptance Criteria': 'Loads in under 3s with live data',
+            'Status': 'Draft',
+            'Assigned To': 'A. Singh',
+            'Due Date': '2026-04-15',
+            'Version': '1.0',
+            'Dependencies': 'REQ-002',
+            'Test Case Ref': '',
+            'Test Status': '',
+            'UAT Result': '',
+            'Sign-off Owner': '',
+            'Comments / Notes': 'Requires rework – scope TBC'
+          }
+        ];
+
+        const verification = [
+          {
+            'REQ ID': 'REQ-001',
+            'Requirement Title': 'Add Signature to Permit Confirmation',
+            'Verif. Method': 'Review',
+            'Criteria Met?': 'Yes',
+            'Complete?': 'Yes',
+            'Correct?': 'Yes',
+            'Unambiguous?': 'Yes',
+            'Testable?': 'Yes',
+            'Overall Verif. Status': 'Verified',
+            'Reviewer': 'J. Brown',
+            'Review Date': '28/04/2026',
+            'Stakeholder Approver': 'CTO',
+            'Approval Date': '29/04/2026',
+            'Sign-off Comments': 'Approved for build'
+          },
+          {
+            'REQ ID': 'REQ-002',
+            'Requirement Title': 'Analytics & Reporting',
+            'Verif. Method': 'Testing',
+            'Criteria Met?': 'Yes',
+            'Complete?': 'Yes',
+            'Correct?': 'Yes',
+            'Unambiguous?': 'Yes',
+            'Testable?': 'Yes',
+            'Overall Verif. Status': 'Verified',
+            'Reviewer': 'J. Brown',
+            'Review Date': '28/04/2026',
+            'Stakeholder Approver': 'CTO',
+            'Approval Date': '29/04/2026',
+            'Sign-off Comments': ''
+          },
+          {
+            'REQ ID': 'REQ-003',
+            'Requirement Title': 'Company Reference Investment Commission',
+            'Verif. Method': 'Review',
+            'Criteria Met?': 'Partial',
+            'Complete?': 'Yes',
+            'Correct?': 'Yes',
+            'Unambiguous?': 'No',
+            'Testable?': 'Yes',
+            'Overall Verif. Status': 'In Review',
+            'Reviewer': 'A. Singh',
+            'Review Date': '30/04/2026',
+            'Stakeholder Approver': '',
+            'Approval Date': '',
+            'Sign-off Comments': 'Acceptance criteria needs refinement'
+          },
+          {
+            'REQ ID': 'REQ-004',
+            'Requirement Title': 'Mesob Service Date / Price',
+            'Verif. Method': 'Analysis',
+            'Criteria Met?': 'Yes',
+            'Complete?': 'Yes',
+            'Correct?': 'Yes',
+            'Unambiguous?': 'Yes',
+            'Testable?': 'Yes',
+            'Overall Verif. Status': 'Verified',
+            'Reviewer': 'DevOps Lead',
+            'Review Date': '28/04/2026',
+            'Stakeholder Approver': 'Arch. Board',
+            'Approval Date': '29/04/2026',
+            'Sign-off Comments': 'NFR accepted'
+          },
+          {
+            'REQ ID': 'REQ-005',
+            'Requirement Title': 'Data Encryption at Rest',
+            'Verif. Method': 'Inspection',
+            'Criteria Met?': 'Yes',
+            'Complete?': 'Yes',
+            'Correct?': 'Yes',
+            'Unambiguous?': 'Yes',
+            'Testable?': 'Yes',
+            'Overall Verif. Status': 'Verified',
+            'Reviewer': 'Security',
+            'Review Date': '27/04/2026',
+            'Stakeholder Approver': 'CISO',
+            'Approval Date': '28/04/2026',
+            'Sign-off Comments': 'Pen-test scheduled Q2'
+          },
+          {
+            'REQ ID': 'REQ-006',
+            'Requirement Title': 'KPI Dashboard',
+            'Verif. Method': 'Walk-Through',
+            'Criteria Met?': 'No',
+            'Complete?': 'Yes',
+            'Correct?': 'No',
+            'Unambiguous?': 'No',
+            'Testable?': 'Yes',
+            'Overall Verif. Status': 'Failed',
+            'Reviewer': 'A. Singh',
+            'Review Date': '30/04/2026',
+            'Stakeholder Approver': '',
+            'Approval Date': '',
+            'Sign-off Comments': 'Requires rework – scope TBC'
+          }
+        ];
+
+        const traceability = [
+          {
+            'REQ ID': 'REQ-001',
+            'Requirement Title': 'Add Signature to Permit Confirmation',
+            'Business Objective': 'BO-01: Secure Access',
+            'Functional Spec Ref': 'FS-001',
+            'Design Doc Ref': 'DD-001',
+            'Development Item': 'US-101',
+            'Test Case Ref': 'TC-001',
+            'Test Result': 'Pass',
+            'Defect Ref': '',
+            'Traceability Status': 'Fully Traced',
+            'Coverage %': '100%',
+            'Notes': ''
+          },
+          {
+            'REQ ID': 'REQ-002',
+            'Requirement Title': 'Analytics & Reporting',
+            'Business Objective': 'BO-02: Data Access',
+            'Functional Spec Ref': 'FS-002',
+            'Design Doc Ref': 'DD-001',
+            'Development Item': 'US-102',
+            'Test Case Ref': 'TC-002',
+            'Test Result': 'Not Run',
+            'Defect Ref': '',
+            'Traceability Status': 'Partially Traced',
+            'Coverage %': '75%',
+            'Notes': 'Test not yet executed'
+          },
+          {
+            'REQ ID': 'REQ-003',
+            'Requirement Title': 'Company Reference Investment Commission',
+            'Business Objective': 'BO-02: Data Access',
+            'Functional Spec Ref': 'FS-003',
+            'Design Doc Ref': 'DD-003',
+            'Development Item': 'US-105',
+            'Test Case Ref': 'TC-010',
+            'Test Result': 'Not Run',
+            'Defect Ref': '',
+            'Traceability Status': 'Partially Traced',
+            'Coverage %': '50%',
+            'Notes': 'Design pending'
+          },
+          {
+            'REQ ID': 'REQ-004',
+            'Requirement Title': 'Mesob Service Date / Price',
+            'Business Objective': 'BO-03: Performance',
+            'Functional Spec Ref': 'NFR-001',
+            'Design Doc Ref': 'DD-004',
+            'Development Item': 'PBI-201',
+            'Test Case Ref': 'TC-020',
+            'Test Result': 'Not Run',
+            'Defect Ref': '',
+            'Traceability Status': 'Partially Traced',
+            'Coverage %': '60%',
+            'Notes': 'NFR verification pending'
+          },
+          {
+            'REQ ID': 'REQ-005',
+            'Requirement Title': 'Data Encryption at Rest',
+            'Business Objective': 'BO-04: Security',
+            'Functional Spec Ref': 'NFR-002',
+            'Design Doc Ref': 'DD-005',
+            'Development Item': 'PBI-202',
+            'Test Case Ref': 'TC-021',
+            'Test Result': 'Not Run',
+            'Defect Ref': '',
+            'Traceability Status': 'Partially Traced',
+            'Coverage %': '70%',
+            'Notes': 'Pen test TBD'
+          },
+          {
+            'REQ ID': 'REQ-006',
+            'Requirement Title': 'KPI Dashboard',
+            'Business Objective': 'BO-02: Data Access',
+            'Functional Spec Ref': 'FS-006',
+            'Design Doc Ref': '',
+            'Development Item': '',
+            'Test Case Ref': '',
+            'Test Result': 'Not Run',
+            'Defect Ref': '',
+            'Traceability Status': 'Not Traced',
+            'Coverage %': '20%',
+            'Notes': 'Design not started'
+          }
+        ];
+
+        return { requirements, verification, traceability };
+      }
+
+            /* ══════════════════════════════════════════════════════════
+               RENDER ALL
+            ══════════════════════════════════════════════════════════ */
+            function renderAll() {
+              renderDashboard();
+              renderRegister();
+              renderVerification();
+              renderTraceability();
+            }
+
+            /* ══════════════════════════════════════════════════════════
+               DASHBOARD
+            ══════════════════════════════════════════════════════════ */
+            function renderDashboard() {
+              const reqs = data.requirements;
+              const total = reqs.length;
+              const approved = reqs.filter(r => r['Status'] === 'Approved').length;
+              const inProgress = reqs.filter(r => r['Status'] === 'In Progress').length;
+              const draft = reqs.filter(r => ['Draft','In Review'].includes(r['Status'])).length;
+              const verif = data.verification.filter(v => v['Overall Verif. Status'] === 'Verified').length;
+              const pct = total > 0 ? Math.round((verif / total) * 100) : 0;
+
+              const kpis = [
+                { label: 'Total Requirements', value: total, sub: '' },
+                { label: 'Approved', value: approved, sub: `${total > 0 ? Math.round(approved/total*100) : 0}% of total` },
+                { label: 'In Progress', value: inProgress, sub: '' },
+                { label: 'Draft / In Review', value: draft, sub: '' },
+                { label: '% Verified', value: pct + '%', sub: `${verif} of ${total}` },
+              ];
+
+              document.getElementById('kpi-grid').innerHTML = kpis.map(k => `
+                <div class="kpi-card">
+                  <div class="kpi-label">${k.label}</div>
+                  <div class="kpi-value">${k.value}</div>
+                  ${k.sub ? `<div class="kpi-sub">${k.sub}</div>` : ''}
+                </div>
+              `).join('');
+
+              const priMap = { 'Must Have': '#e05252', 'Should Have': '#4c8fe0', 'Could Have': '#9b72e0', "Won't Have": '#6b7280' };
+              const priCounts = {};
+              reqs.forEach(r => { const p = r['Priority (MoSCoW)'] || "Won't Have"; priCounts[p] = (priCounts[p] || 0) + 1; });
+              document.getElementById('priority-chart').innerHTML = Object.entries(priMap).map(([label, color]) => {
+                const count = priCounts[label] || 0;
+                const p = total > 0 ? (count / total * 100) : 0;
+                return `<div class="bar-row"><div class="bar-label">${label}</div><div class="bar-track"><div class="bar-fill" style="width:${p}%;background:${color}"></div></div><div class="bar-count">${count}</div></div>`;
+              }).join('');
+
+              const statMap = { 'Approved': '#4caf7d', 'In Progress': '#e09a3c', 'In Review': '#4c8fe0', 'Draft': '#6b7280', 'Rejected': '#e05252', 'Closed': '#e05252' };
+              const statCounts = {};
+              reqs.forEach(r => { const s = r['Status'] || 'Draft'; statCounts[s] = (statCounts[s] || 0) + 1; });
+              document.getElementById('status-chart').innerHTML = Object.entries(statMap).map(([label, color]) => {
+                const count = statCounts[label] || 0;
+                const p = total > 0 ? (count / total * 100) : 0;
+                return `<div class="bar-row"><div class="bar-label">${label}</div><div class="bar-track"><div class="bar-fill" style="width:${p}%;background:${color}"></div></div><div class="bar-count">${count}</div></div>`;
+              }).join('');
+            }
+
+            /* ══════════════════════════════════════════════════════════
+               REQUIREMENTS REGISTER
+            ══════════════════════════════════════════════════════════ */
+            function getFilteredReqs() {
+              return data.requirements.filter(r => {
+                const s = activeFilters.search.toLowerCase();
+                const matchSearch = !s || [r['REQ ID'], r['Requirement Title'], r['Category'], r['Assigned To']].join(' ').toLowerCase().includes(s);
+                const matchStatus = !activeFilters.status || r['Status'] === activeFilters.status;
+                const matchPriority = !activeFilters.priority || r['Priority (MoSCoW)'] === activeFilters.priority;
+                return matchSearch && matchStatus && matchPriority;
+              });
+            }
+
+            function priorityBadge(p) {
+              const map = { 'Must Have': 'must', 'Should Have': 'should', 'Could Have': 'could', "Won't Have": 'wont' };
+              return `<span class="badge ${map[p] || 'wont'}">${p || '—'}</span>`;
+            }
+
+            function statusCell(s) {
+              const cls = (s || '').toLowerCase().replace(/\s+/g, '-').replace(/\//g, '');
+              return `<div class="status-text"><span class="status-dot st-${cls}"></span>${s || 'Draft'}</div>`;
+            }
+
+            function renderRegister() {
+              const rows = getFilteredReqs();
+              const tbody = document.getElementById('register-tbody');
+              if (!rows.length) {
+                tbody.innerHTML = `<tr><td colspan="8"><div class="empty">No requirements found.</div></td></tr>`;
+                return;
+              }
+              tbody.innerHTML = rows.map(r => {
+                const idx = data.requirements.indexOf(r);
+                return `<tr>
+                  <td><span class="req-id">${r['REQ ID'] || ''}</span></td>
+                  <td>${r['Category'] || '—'}</td>
+                  <td style="max-width:240px">${r['Requirement Title'] || '—'}</td>
+                  <td>${priorityBadge(r['Priority (MoSCoW)'])}</td>
+                  <td>${statusCell(r['Status'])}</td>
+                  <td>${r['Assigned To'] || '—'}</td>
+                  <td style="white-space:nowrap">${r['Due Date'] || '—'}</td>
+                  <td><div class="actions">
+                    <button class="btn-icon" onclick="openModal(${idx})" title="Edit">✎</button>
+                    <button class="btn-icon del" onclick="deleteReq(${idx})" title="Delete">✕</button>
+                  </div></td>
+                </tr>`;
+              }).join('');
+            }
+
+            function filterRegister(v) { activeFilters.search = v; renderRegister(); }
+            function filterStatus(v)   { activeFilters.status = v; renderRegister(); }
+            function filterPriority(v) { activeFilters.priority = v; renderRegister(); }
+
+            /* ══════════════════════════════════════════════════════════
+               VERIFICATION
+            ══════════════════════════════════════════════════════════ */
+            let verifFilter = '';
+            function filterVerification(v) { verifFilter = v.toLowerCase(); renderVerification(); }
+
+            function renderVerification() {
+              const rows = data.verification.filter(r => !verifFilter || JSON.stringify(r).toLowerCase().includes(verifFilter));
+              const tbody = document.getElementById('verification-tbody');
+              if (!rows.length) { tbody.innerHTML = `<tr><td colspan="11"><div class="empty">No verification records.</div></td></tr>`; return; }
+              const stColors = { Verified: '#4caf7d', 'In Review': '#4c8fe0', Failed: '#e05252', Pending: '#e09a3c' };
+              tbody.innerHTML = rows.map(r => {
+                const vs = r['Overall Verif. Status'] || 'Pending';
+                const color = stColors[vs] || '#6b7280';
+                const idx = data.verification.indexOf(r);
+                const yn = (f) => `<select class="inline-select" onchange="updateVerif(${idx},'${f}',this.value)">
+                  ${['Yes','No','Partial','N/A'].map(o=>`<option ${r[f]===o?'selected':''}>${o}</option>`).join('')}
+                </select>`;
+                return `<tr>
+                  <td><span class="req-id">${r['REQ ID']||''}</span></td>
+                  <td style="max-width:180px">${r['Requirement Title']||'—'}</td>
+                  <td>${r['Verif. Method']||'—'}</td>
+                  <td>${yn('Complete?')}</td><td>${yn('Correct?')}</td>
+                  <td>${yn('Unambiguous?')}</td><td>${yn('Testable?')}</td>
+                  <td><span style="color:${color};font-weight:600;font-size:11px">${vs}</span></td>
+                  <td>${r['Reviewer']||'—'}</td>
+                  <td>${r['Stakeholder Approver']||'—'}</td>
+                  <td style="max-width:200px;font-size:11px;color:var(--muted)">${r['Sign-off Comments']||''}</td>
+                </tr>`;
+              }).join('');
+            }
+
+            function updateVerif(idx, field, value) {
+              data.verification[idx][field] = value;
+              const r = data.verification[idx];
+              const checks = [r['Complete?'], r['Correct?'], r['Unambiguous?'], r['Testable?']];
+              if (checks.every(c => c === 'Yes')) r['Overall Verif. Status'] = 'Verified';
+              else if (checks.some(c => c === 'No')) r['Overall Verif. Status'] = 'Failed';
+              else r['Overall Verif. Status'] = 'In Review';
+              renderVerification();
+              renderDashboard();
+              syncData();
+            }
+
+            /* ══════════════════════════════════════════════════════════
+               TRACEABILITY
+            ══════════════════════════════════════════════════════════ */
+            let traceFilter = '';
+            function filterTraceability(v) { traceFilter = v.toLowerCase(); renderTraceability(); }
+
+            function renderTraceability() {
+              const rows = data.traceability.filter(r => !traceFilter || JSON.stringify(r).toLowerCase().includes(traceFilter));
+              const tbody = document.getElementById('traceability-tbody');
+              if (!rows.length) { tbody.innerHTML = `<tr><td colspan="12"><div class="empty">No traceability records.</div></td></tr>`; return; }
+              const traceColors = { 'Fully Traced': '#4caf7d', 'Partially Traced': '#e09a3c', 'Not Traced': '#e05252' };
+              const testColors  = { 'Pass': '#4caf7d', 'Fail': '#e05252', 'Not Run': '#6b7280', 'In Progress': '#e09a3c' };
+              tbody.innerHTML = rows.map(r => {
+                const tc = traceColors[r['Traceability Status']] || '#6b7280';
+                const tres = r['Test Result'] || 'Not Run';
+                const cov = parseInt(r['Coverage %'] || '0');
+                return `<tr>
+                  <td><span class="req-id">${r['REQ ID']||''}</span></td>
+                  <td style="max-width:160px">${r['Requirement Title']||'—'}</td>
+                  <td style="max-width:140px;font-size:12px">${r['Business Objective']||'—'}</td>
+                  <td style="font-family:var(--font-mono);font-size:11px">${r['Functional Spec Ref']||'—'}</td>
+                  <td style="font-family:var(--font-mono);font-size:11px">${r['Design Doc Ref']||'—'}</td>
+                  <td style="font-family:var(--font-mono);font-size:11px">${r['Development Item']||'—'}</td>
+                  <td style="font-family:var(--font-mono);font-size:11px">${r['Test Case Ref']||'—'}</td>
+                  <td><span style="color:${testColors[tres]||'#6b7280'};font-size:11px;font-weight:600">${tres}</span></td>
+                  <td style="font-family:var(--font-mono);font-size:11px">${r['Defect Ref']||'—'}</td>
+                  <td><span style="color:${tc};font-size:11px;font-weight:600">${r['Traceability Status']||'—'}</span></td>
+                  <td>
+                    <div style="display:flex;align-items:center;gap:8px">
+                      <div class="bar-track" style="width:60px"><div class="bar-fill" style="width:${cov}%;background:${tc}"></div></div>
+                      <span style="font-family:var(--font-mono);font-size:11px">${r['Coverage %']||'0%'}</span>
+                    </div>
+                  </td>
+                  <td style="max-width:160px;font-size:11px;color:var(--muted)">${r['Notes']||''}</td>
+                </tr>`;
+              }).join('');
+            }
+
+            /* ══════════════════════════════════════════════════════════
+               MODAL
+            ══════════════════════════════════════════════════════════ */
+            function openModal(idx = -1) {
+              document.getElementById('f-index').value = idx;
+              const r = idx >= 0 ? data.requirements[idx] : {};
+              document.getElementById('modal-title').textContent = idx >= 0 ? 'Edit Requirement' : 'Add Requirement';
+              document.getElementById('f-id').value          = r['REQ ID'] || nextReqId();
+              document.getElementById('f-category').value    = r['Category'] || 'Functional';
+              document.getElementById('f-subcategory').value = r['Sub-Category'] || '';
+              document.getElementById('f-title').value       = r['Requirement Title'] || '';
+              document.getElementById('f-description').value = r['Requirement Description'] || '';
+              document.getElementById('f-priority').value    = r['Priority (MoSCoW)'] || 'Must Have';
+              document.getElementById('f-source').value      = r['Source / Stakeholder'] || '';
+              document.getElementById('f-acceptance').value  = r['Acceptance Criteria'] || '';
+              document.getElementById('f-status').value      = r['Status'] || 'Draft';
+              document.getElementById('f-assigned').value    = r['Assigned To'] || '';
+              document.getElementById('f-due').value         = r['Due Date'] ? r['Due Date'].split('T')[0] : '';
+              document.getElementById('f-version').value     = r['Version'] || '1.0';
+              document.getElementById('f-dependencies').value= r['Dependencies'] || '';
+              document.getElementById('f-testref').value     = r['Test Case Ref'] || '';
+              document.getElementById('f-teststatus').value  = r['Test Status'] || '';
+              document.getElementById('f-uat').value         = r['UAT Result'] || '';
+              document.getElementById('f-signoff').value     = r['Sign-off Owner'] || '';
+              document.getElementById('f-comments').value    = r['Comments / Notes'] || '';
+              document.getElementById('modal-bg').classList.add('open');
+            }
+
+            function closeModal()  { document.getElementById('modal-bg').classList.remove('open'); }
+            function handleModalBgClick(e) { if (e.target === document.getElementById('modal-bg')) closeModal(); }
+
+            function nextReqId() {
+              const ids = data.requirements.map(r => parseInt((r['REQ ID']||'REQ-000').replace('REQ-','')));
+              return `REQ-${String((ids.length ? Math.max(...ids) : 0) + 1).padStart(3,'0')}`;
+            }
+
+            function saveRequirement() {
+              const idx = parseInt(document.getElementById('f-index').value);
+              const req = {
+                'REQ ID': document.getElementById('f-id').value,
+                'Category': document.getElementById('f-category').value,
+                'Sub-Category': document.getElementById('f-subcategory').value,
+                'Requirement Title': document.getElementById('f-title').value,
+                'Requirement Description': document.getElementById('f-description').value,
+                'Priority (MoSCoW)': document.getElementById('f-priority').value,
+                'Source / Stakeholder': document.getElementById('f-source').value,
+                'Acceptance Criteria': document.getElementById('f-acceptance').value,
+                'Status': document.getElementById('f-status').value,
+                'Assigned To': document.getElementById('f-assigned').value,
+                'Due Date': document.getElementById('f-due').value,
+                'Version': document.getElementById('f-version').value,
+                'Dependencies': document.getElementById('f-dependencies').value,
+                'Test Case Ref': document.getElementById('f-testref').value,
+                'Test Status': document.getElementById('f-teststatus').value,
+                'UAT Result': document.getElementById('f-uat').value,
+                'Sign-off Owner': document.getElementById('f-signoff').value,
+                'Comments / Notes': document.getElementById('f-comments').value,
+              };
+              if (idx >= 0) {
+                data.requirements[idx] = req;
+                toast('Requirement updated ✓');
+              } else {
+                data.requirements.push(req);
+                data.verification.push({ 'REQ ID': req['REQ ID'], 'Requirement Title': req['Requirement Title'], 'Verif. Method':'Review','Complete?':'','Correct?':'','Unambiguous?':'','Testable?':'','Overall Verif. Status':'Pending','Reviewer':'','Review Date':'','Stakeholder Approver':'','Approval Date':'','Sign-off Comments':'' });
+                data.traceability.push({ 'REQ ID': req['REQ ID'], 'Requirement Title': req['Requirement Title'], 'Business Objective':'','Functional Spec Ref':'','Design Doc Ref':'','Development Item':'','Test Case Ref':'','Test Result':'Not Run','Defect Ref':'','Traceability Status':'Not Traced','Coverage %':'0%','Notes':'' });
+                toast('Requirement added ✓');
+              }
+              closeModal();
+              renderAll();
+              syncData();
+            }
+
+            function deleteReq(idx) {
+              if (!confirm(`Delete ${data.requirements[idx]['REQ ID']}?`)) return;
+              const id = data.requirements[idx]['REQ ID'];
+              data.requirements.splice(idx, 1);
+              data.verification = data.verification.filter(r => r['REQ ID'] !== id);
+              data.traceability = data.traceability.filter(r => r['REQ ID'] !== id);
+              renderAll();
+              syncData();
+              toast('Requirement deleted');
+            }
+
+            /* ══════════════════════════════════════════════════════════
+               TABS
+            ══════════════════════════════════════════════════════════ */
+            function switchTab(id) {
+              document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+              document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+              document.getElementById('panel-' + id).classList.add('active');
+              event.target.classList.add('active');
+            }
+
+            /* ══════════════════════════════════════════════════════════
+               UTILS
+            ══════════════════════════════════════════════════════════ */
+            function setSyncStatus(state, label) {
+              const dot = document.getElementById('sync-dot');
+              document.getElementById('sync-label').textContent = label;
+              dot.className = 'dot';
+              if (state === 'ok')     dot.classList.add('ok');
+              if (state === 'saving') dot.classList.add('saving');
+              if (state === 'err')    dot.classList.add('err');
+              if (state === 'warn')   dot.style.background = '#e09a3c';
+            }
+
+            let toastTimer;
+            function toast(msg, type = 'ok') {
+              const el = document.getElementById('toast');
+              el.textContent = msg;
+              el.style.borderColor = type === 'err' ? 'var(--danger)' : 'var(--success)';
+              el.classList.add('show');
+              clearTimeout(toastTimer);
+              toastTimer = setTimeout(() => el.classList.remove('show'), 3500);
+            }
+
+            // On load — if Sheet URL already saved, update button label
+            if (SHEET_URL) document.addEventListener('DOMContentLoaded', () => {
+              const btn = document.querySelector('.btn-sync');
+              if (btn) btn.textContent = '⇅ Sheet Connected';
+            });
+    </script>
+  </body>
 </html>
